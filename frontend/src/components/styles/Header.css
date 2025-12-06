@@ -1,0 +1,92 @@
+
+.header-container {
+    background-color: #003366; /* Fondo azul oscuro */
+    color: #ffffff; /* Letra blanca */
+    display: flex;
+    justify-content: flex-start; /* Espacio entre logo, nav y botones */
+    align-items: center;
+    padding: 10px 5%; /* Espaciado interno horizontal */
+    height: 170px;
+}
+
+/* --- LOGO --- */
+.logo-section .logo {
+    height: 150px; /* Ajusta el tamaño del logo */
+    margin-right: 20px;
+}
+
+/* --- ENLACES DE NAVEGACIÓN --- */
+.nav-links{
+    margin-right: auto;
+}
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-right: 35px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #FF6E40; /* Cambia a color primario al pasar el mouse */
+}
+
+/* --- BOTONES DE AUTENTICACIÓN --- */
+.auth-buttons {
+    display: flex;
+    gap: 15px; /* Espacio entre botones */
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff; /* Letra blanca para todos los botones */
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #FF6E40; /* Naranja */
+}
+
+.btn-secondary {
+    background-color: #004D40; /* Verde oscuro */
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* --- MENÚ HAMBURGUESA (Inicialmente oculto en desktop) --- */
+.menu-button {
+    display: none; /* Oculto en pantallas grandes */
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* --- RESPONSIVIDAD (Diseño Móvil) --- */
+
+@media (max-width: 768px) {
+    /* Ocultamos los enlaces y botones en móvil */
+    .nav-links, .auth-buttons {
+        display: none;
+    }
+
+    /* Mostramos el botón de menú hamburguesa */
+    .menu-button {
+        display: block;
+    }
+
+    /* Opcional: Alinear el logo a la izquierda */
+    .header-container {
+        justify-content: space-between;
+    }
+}

@@ -1,0 +1,378 @@
+/* Estilos para la página de Provisores Legales */
+
+.provisor-page-container {
+    min-height: 80vh; /* Asegura que la página sea alta */
+    background-color: #ffffff;
+}
+
+/* --- SECCIÓN PROVISOR HERO (Banner principal de la página) --- */
+.provisor-hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 5%;
+    background-color: #f7f9fa; /* Fondo gris muy claro */
+    gap: 50px;
+}
+
+.provisor-hero-content {
+    flex: 1;
+    max-width: 500px;
+    text-align: left;
+}
+
+.provisor-hero-image {
+    flex: 1;
+    max-width: 450px;
+}
+
+.provisor-hero-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 51, 102, 0.2); /* Sombra sutil con color de la marca */
+}
+
+/* Texto */
+.provisor-hero-content .subtitle {
+    color: #FF6E40; /* Naranja */
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.provisor-hero-content h1 {
+    font-size: 2.8em;
+    color: #003366; /* Azul oscuro */
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.provisor-hero-content .description {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Botones CTA */
+.provisor-cta-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-provisor-primary, .btn-provisor-secondary {
+    padding: 12px 25px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn-provisor-primary {
+    background-color: #FF6E40; /* Naranja */
+    color: #ffffff;
+}
+
+.btn-provisor-secondary {
+    background-color: #004D40; /* Verde oscuro */
+    color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .provisor-hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 50px;
+    }
+    .provisor-hero-content {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+    .provisor-cta-buttons {
+        justify-content: center;
+    }
+}
+
+/* --- SECCIÓN 2: VALIDACIÓN Y ESTÁNDARES --- */
+
+.provisor-validation-section {
+    background-color:#f7f9fa; /* Fondo negro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 5%;
+    gap: 60px;
+    color: #ffffff; /* Texto general blanco para el fondo oscuro */
+}
+
+.validation-image-container {
+    flex: 1;
+    max-width: 450px;
+}
+
+.validation-image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+}
+
+.validation-content {
+    flex: 1;
+    max-width: 500px;
+    text-align: left;
+}
+
+/* Texto */
+
+.validation-subtitle {
+    color: #FF6E40;
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    font-size: 0.95em;
+}
+
+.validation-content h2 {
+    font-size: 2.5em;
+    color: #003366;; /* Blanco brillante */
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.validation-description {
+    font-size: 1.1em;
+        color: #555;
+    margin-bottom: 30px;
+}
+
+/* Botón CTA de Validación */
+.btn-validation-cta {
+    background-color: #FF6E40; /* Naranja fuerte */
+    color: #ffffff;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-validation-cta:hover {
+    background-color: #E65100; /* Naranja más oscuro */
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .provisor-validation-section {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 50px;
+    }
+    .validation-content {
+        max-width: 100%;
+        margin-top: 30px;
+    }
+    .validation-content h2, .validation-content p {
+        text-align: center;
+    }
+}
+
+/* --- SECCIÓN 3: CLASIFICACIÓN DE CATEGORÍAS --- */
+.provisor-categories-section {
+    padding: 80px 5%;
+    text-align: center;
+    background-color: #f7f9fa; /* Fondo claro de contraste, según tu petición */
+}
+
+.categories-header {
+    max-width: 800px;
+    margin: 0 auto 50px;
+}
+
+/* Subtítulo */
+.categories-subtitle {
+    color: #FF6E40; /* Naranja, según tu petición */
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    font-size: 0.9em;
+}
+
+/* Título */
+.categories-header h2 {
+    font-size: 2.5em;
+    color: #003366; /* Azul Oscuro, según tu petición */
+    margin-bottom: 20px;
+}
+
+/* Párrafo Descriptivo */
+.categories-description {
+    font-size: 1.1em;
+    color: #555; /* Gris, según tu petición */
+}
+
+/* Grid de Categorías (2 filas de 3 columnas) */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto 40px;
+}
+
+/* Estilo de cada Tarjeta/Icono */
+.category-card {
+    background-color: #ffffff;
+    border: 2px solid #003366; /* Borde Azul Oscuro */
+    border-radius: 8px;
+    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.category-card:hover {
+    background-color: #003366;
+    transform: translateY(-5px);
+}
+
+.category-card:hover .category-icon {
+    filter: brightness(0) invert(1); /* Cambia el icono a blanco */
+}
+
+.category-card:hover h3 {
+    color: #ffffff; /* Cambia el texto a blanco */
+}
+
+/* Icono (asumiendo que son imágenes o SVG) */
+.category-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+    transition: filter 0.3s;
+}
+
+.category-card h3 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #003366;
+    transition: color 0.3s;
+}
+
+/* Botón Final */
+.btn-explore-categories {
+    background-color: #FF6E40; /* Naranja */
+    color: #ffffff;
+    padding: 15px 35px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en móviles */
+        gap: 20px;
+    }
+    .categories-header h2 {
+        font-size: 2em;
+    }
+}
+@media (max-width: 480px) {
+    .categories-grid {
+        grid-template-columns: 1fr; /* 1 columna en móviles pequeños */
+    }
+}
+
+/* --- SECCIÓN 4: CÓDIGO QR Y REFERENTE --- */
+.provisor-qr-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Fondo blanco (o transparente si el body ya es blanco) */
+    background-color: #ffffff; 
+    padding: 80px 5%;
+    gap: 60px;
+}
+
+.qr-content {
+    flex: 1;
+    max-width: 500px;
+    text-align: left;
+}
+
+.qr-image-container {
+    flex: 1;
+    max-width: 450px;
+}
+
+.qr-image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    /* Sombra sutil, similar al Hero */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+}
+
+/* Texto */
+.qr-subtitle {
+    color: #FF6E40; /* Naranja, según tu petición */
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    font-size: 0.9em;
+}
+
+.qr-content h2 {
+    font-size: 2.8em;
+    color: #003366; /* Azul Oscuro, según tu petición */
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.qr-description {
+    font-size: 1.1em;
+    color: #555; /* Gris, según tu petición */
+    margin-bottom: 30px;
+}
+
+/* Botón CTA (Naranja, similar al Hero) */
+.btn-qr-cta {
+    background-color: #FF6E40; /* Naranja */
+    color: #ffffff;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Responsive: Invertir el orden para móvil para que el texto vaya primero */
+@media (max-width: 992px) {
+    .provisor-qr-section {
+        flex-direction: column-reverse; /* Hace que la imagen suba y el texto baje */
+        text-align: center;
+        padding-top: 50px;
+    }
+    .qr-content {
+        max-width: 100%;
+        margin-top: 30px;
+    }
+    .qr-content h2, .qr-content p {
+        text-align: center;
+    }
+}

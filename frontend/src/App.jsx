@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header'; // Importamos el nuevo componente Header
+import MainContent from './components/MainContent';
+import Footer from './components/Footer';
+import ProvisorPage from './pages/ProvisorPage';
+import LoginPage from './pages/loginPage'; 
+import RegisterPage from './pages/RegisterPage';
+
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+// Componente para la página de Inicio (Index)
+const HomePage = () => (
+  <>
+    <MainContent />
+    
+  </>
+);
 
+
+function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router> 
+      <div className="App">
+        <Header /> 
+        
+        <Routes> 
+          
+          {/* Ruta de Inicio (Index): Muestra MainContent + Footer */}
+          <Route path="/" element={<HomePage />} />
+          {/* Ruta de Provisores Legales: Muestra la nueva página */}
+          <Route path="/provisores" element={<ProvisorPage />} />
+          {/* Puedes añadir más rutas aquí (ej. /login, /turistas) */}
+          
+          <Route path="/iniciar-sesion" element={<LoginPage />} />
+
+          <Route path="/registrarse" element={<RegisterPage />} />
+          
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <Footer />
+    </Router>
+    
+  );
 }
 
-export default App
+export default App;

@@ -1,0 +1,61 @@
+/* Paleta de colores: Fondo (#003366), Texto (#FFFFFF) */
+.footer-container {
+    background-color: #003366; 
+    color: #ffffff;
+    padding: 40px 5%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.logo_turismo{
+    width: 30%;
+}
+
+.footer-section {
+    flex: 1; /* Ocupa espacio equitativamente */
+    min-width: 200px; /* Mínimo para que no se apilen demasiado rápido */
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    border-bottom: 2px solid #FF6E40; /* Línea naranja de separación */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+
+.footer-section p, .footer-section a {
+    font-size: 0.9em;
+    line-height: 1.6;
+    color: #cccccc;
+    text-decoration: none;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section a:hover {
+    color: #FF6E40;
+}
+
+/* Estilos de la franja inferior */
+.footer-bottom {
+    width: 100%;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-section {
+        min-width: 100%;
+    }
+}

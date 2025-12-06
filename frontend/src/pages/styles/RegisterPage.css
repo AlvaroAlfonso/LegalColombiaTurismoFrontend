@@ -1,0 +1,155 @@
+/* --- ESTILOS DE LA PÁGINA DE REGISTRO --- */
+.register-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alineación arriba, no al centro completo */
+    min-height: 90vh; 
+    background-color: #f7f9fa;
+    padding: 40px 20px;
+}
+
+.form-content-wrapper {
+    max-width: 900px; /* Ancho más grande para formularios de Provisor */
+    width: 100%;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 51, 102, 0.1);
+}
+
+.register-title {
+    font-size: 2em;
+    color: #003366;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* --- SELECTORES DE ROL (Principal y Proveedor) --- */
+.register-role-selector-container,
+.register-type-selector-container {
+    padding: 20px;
+}
+
+.selector-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.btn-role-select {
+    padding: 20px 40px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #003366;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    min-width: 250px;
+}
+
+.btn-role-select:hover {
+    background-color: #003366;
+    color: #ffffff;
+}
+
+/* --- ESTILOS DE FORMULARIO COMÚN --- */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-section h3 {
+    color: #FF6E40;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas por defecto */
+    gap: 20px;
+}
+
+.form-grid input[type="text"],
+.form-grid input[type="date"],
+.form-grid input[type="tel"],
+.form-grid input[type="email"],
+.form-grid input[type="password"],
+.form-grid select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Estilo para etiquetas de archivo (para que se vean como botones) */
+.file-label {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px dashed #003366; /* Borde punteado para archivos */
+    border-radius: 4px;
+    background-color: #f0f4f7;
+    color: #003366;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.form-grid input[type="file"] {
+    display: none; /* Oculta el input de archivo nativo */
+}
+
+/* Botones de acción y navegación */
+.btn-register-submit {
+    background-color: #FF6E40;
+    color: #ffffff;
+    padding: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-back-main, .btn-back-profile {
+    background: none;
+    border: none;
+    color: #003366;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: left;
+    padding: 0;
+}
+/* Estilo para mensajes de error */
+.error-message {
+    color: #FF6E40; /* Naranja de tu paleta */
+    font-size: 0.85em;
+    margin-top: 5px;
+    margin-left: 2px;
+    text-align: left; /* Asegura que el error se alinee con el campo */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-content-wrapper {
+        padding: 20px;
+    }
+    .form-grid {
+        grid-template-columns: 1fr; /* Una columna en móvil */
+    }
+    .selector-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .btn-role-select {
+        min-width: 100%;
+    }
+}

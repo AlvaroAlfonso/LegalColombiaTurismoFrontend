@@ -1,0 +1,117 @@
+/* --- ESTILOS DE LA PÁGINA DE INICIO DE SESIÓN --- */
+.login-page-container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh; /* Ocupa casi toda la altura visible */
+    background-color: #f7f9fa; /* Fondo gris muy claro */
+    padding: 50px 20px;
+    flex-direction: column;
+}
+
+.login-form-wrapper {
+    max-width: 400px;
+    width: 100%;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #cce0f0; /* Borde sutil */
+    box-shadow: 0 4px 20px rgba(0, 51, 102, 0.1);
+    text-align: center;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 1.8em;
+    color: #003366; /* Azul Oscuro */
+    margin-bottom: 30px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Estilos de los campos de entrada */
+.form-group {
+    text-align: left;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #003366; /* Borde del color principal */
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+/* Checkbox */
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.form-checkbox label {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #003366;
+    margin: 0;
+}
+
+/* Botón de Envío */
+.btn-login-submit {
+    background-color: #FF6E40; /* Naranja */
+    color: #ffffff;
+    padding: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-login-submit:hover {
+    background-color: #E65100;
+}
+
+/* Enlaces inferiores */
+.login-links {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.login-links p {
+    margin: 5px 0;
+}
+
+.login-links a {
+    color: #003366;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-links a:hover {
+    text-decoration: underline;
+}

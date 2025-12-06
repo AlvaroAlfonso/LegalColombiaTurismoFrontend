@@ -1,0 +1,289 @@
+/* ======================== ESTILOS GLOBALES DENTRO DE MAIN-CONTENT ======================== */
+.main-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* ======================== 1. HERO SECTION STYLES ======================== */
+.hero-section {
+
+    background: url('/public/Images/ContenidoColombia.jpg');
+    background-size: cover;
+    height: 500px; /* Altura del banner */
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    text-align: center;
+    padding: 0 5%;
+    position: relative; 
+    overflow: hidden;
+}
+
+.image_user{
+    width: 40%;
+    border-radius: 80%;
+    border: solid 5px;
+    margin-bottom: 30px;
+}
+.hero-section::before {
+    content: ""; /* Obligatorio para pseudo-elementos */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* Color de la capa: Negro (rgba(0,0,0)) con 50% de opacidad (0.5) */
+    background-color: rgba(0, 0, 0, 0.705); 
+}
+
+.hero-content {
+    max-width: 900px;
+    padding: 20px;
+    color: #ffffff; 
+    z-index: 2px;/* Azul oscuro para los textos */
+    position: relative;
+}
+
+.hero-content h1 {
+    font-size: 3.5em; /* Título grande */
+    margin-bottom: 0.5em;
+    color: #ffffff;
+    
+}
+
+.hero-content p {
+    font-size: 1.3em;
+    margin-bottom: 1.5em;
+}
+
+.cta-button {
+    background-color: #FF6E40; /* Naranja (BTN_INICIO_SESSION) */
+    color: #ffffff;
+    border: none;
+    padding: 15px 35px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.cta-button:hover {
+    opacity: 0.8;
+}
+
+/* ======================== 2. ROLE SELECTOR SECTION STYLES ======================== */
+.role-selector-section {
+    padding: 40px 5%;
+    background-color: #ffffff; /* Fondo blanco */
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.role-selector-section h2 {
+    font-size: 2em;
+    color: #003366;
+    margin-bottom: 25px;
+}
+
+.selector-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espacio entre los botones */
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: 2px solid #003366; /* Borde azul */
+    cursor: pointer;
+    background-color: transparent;
+    color: #003366;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+.tab.active {
+    /* Estilo del botón activo (Turista o Proveedor) */
+    background-color: #003366; /* Azul Oscuro */
+    color: #ffffff;
+    border-color: #003366;
+}
+.role-specific-content h3 {
+    color: #FF6E40; /* Naranja */
+    margin-bottom: 15px;
+}
+.role-specific-content ul {
+    list-style: none;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    color: #333;
+}
+
+.cta-button-small {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+}
+.btn-turista {
+    background-color: #FF6E40; /* Naranja */
+}
+
+.btn-proveedor {
+    background-color: #004D40; /* Verde Oscuro */
+}
+
+.role-specific-content li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    
+
+}
+
+/* --- NUEVOS ESTILOS: Contenido específico del Rol --- */
+.role-content-display {
+    max-width: 800px;
+    margin: 30px auto 0;
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #f0f4f7; /* Fondo claro de contraste */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Alineación del texto dentro del contenido */
+}
+.tab-turista:hover {
+    background-color: #FF6E40; /* Naranja al pasar el mouse */
+    color: #ffffff;
+    border-color: #FF6E40;
+}
+
+.tab-proveedor:hover {
+    background-color: #004D40; /* Verde al pasar el mouse */
+    color: #ffffff;
+    border-color: #004D40;
+}
+
+.selector-info {
+    font-style: italic;
+    color: #666;
+}
+
+/* ======================== 3. FEATURES SECTION STYLES ======================== */
+.features-section {
+    padding: 60px 5%;
+    text-align: center;
+    background-color: #f7f9fa; /* Fondo claro de contraste */
+}
+
+.features-section h2 {
+    font-size: 2.5em;
+    color: #003366;
+    margin-bottom: 40px;
+}
+
+.feature-cards-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
+.feature-card {
+    background-color: #ffffff; 
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    max-width: 300px;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card .feature-icon {
+    width: 60px; /* Tamaño de icono 1x1 */
+    height: 60px; /* Tamaño de icono 1x1 */
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    color: #FF6E40; /* Naranja */
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    color: #555;
+    font-size: 0.95em;
+}
+
+/* ======================== 4. TESTIMONIALS SECTION STYLES ======================== */
+.testimonials-section {
+    background-color: #003366; /* Fondo azul oscuro, como el Header */
+    color: #ffffff;
+    padding: 80px 5%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.testimonials-section h2 {
+    font-size: 2.8em;
+    margin-bottom: 50px;
+}
+
+.testimonial-card {
+    max-width: 800px;
+    margin: 30px auto;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+    border-radius: 10px;
+    padding: 40px;
+    font-style: italic;
+    font-size: 1.1em;
+}
+
+.testimonial-card p {
+    margin-bottom: 15px;
+}
+
+.testimonial-author {
+    font-weight: bold;
+    color: #FF6E40; /* Naranja */
+    font-style: normal;
+}
+
+/* ======================== RESPONSIVIDAD GENERAL DE MAIN-CONTENT ======================== */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5em;
+    }
+    .hero-section {
+        height: 350px;
+    }
+    .features-section h2, .role-selector-section h2, .testimonials-section h2 {
+        font-size: 2em;
+    }
+    .feature-cards-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .feature-card {
+        max-width: 90%;
+    }
+    .selector-tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .tab {
+        width: 80%;
+        margin: 0 auto;
+        border-radius: 5px !important; /* Asegura el redondeo completo */
+    }
+    .tab:first-child, .tab:last-child {
+        border-radius: 5px;
+        border-left: 2px solid #003366; /* Restaurar borde en móvil */
+    }
+}
