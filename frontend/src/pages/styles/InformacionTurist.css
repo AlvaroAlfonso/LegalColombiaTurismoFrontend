@@ -1,0 +1,181 @@
+.info-container {
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  color: #073B63;
+}
+
+/* HERO */
+.hero-section {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.hero-logo {
+  width: 120px;
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.hero-title span {
+  color: #0A4C8A;
+}
+
+.hero-text {
+  max-width: 900px;
+  margin: 20px auto;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hero-images {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.hero-images img {
+  width: 40%;
+  border-radius: 10px;
+}
+
+/* SECTION TITLE */
+.section-title {
+  text-align: center;
+  margin: 60px 0 30px;
+}
+
+.section-title h2 {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+/* PROBLEMS + SOLUTIONS */
+.problems-solutions {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  gap: 40px;
+}
+
+.column {
+  width: 48%;
+}
+
+.column h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+
+.item {
+  margin-bottom: 30px;
+}
+
+.item h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.item p {
+  line-height: 1.6;
+  color: #333;
+}
+
+/* SECTION FINAL CTA */
+.bottom-cta {
+  background: #F7F9FB;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.bottom-cta h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.bottom-cta span {
+  color: #0A4C8A;
+}
+
+.bottom-text {
+  max-width: 900px;
+  margin: 20px auto;
+  font-size: 16px;
+}
+
+.bottom-images {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 25px;
+}
+
+.bottom-images img {
+  width: 40%;
+  border-radius: 12px;
+}
+
+/* FOOTER */
+.footer {
+  background: #073B63;
+  color: white;
+  padding: 60px 40px 20px;
+}
+
+.footer-brand img {
+  width: 120px;
+}
+
+.footer-brand p {
+  max-width: 300px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+
+.footer-links h4 {
+  font-weight: 800;
+}
+
+.footer-links p {
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.footer-copy {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .hero-images,
+  .bottom-images {
+    flex-direction: column;
+  }
+  .hero-images img,
+  .bottom-images img {
+    width: 100%;
+  }
+
+  .problems-solutions {
+    flex-direction: column;
+  }
+
+  .column {
+    width: 100%;
+  }
+}
