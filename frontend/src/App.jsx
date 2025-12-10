@@ -15,6 +15,9 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import Turist from './pages/HomeTurist';
 import Informacion from './pages/InformacionTurist';
 import ServiciosSeguros from "./pages/ServiciosSeguros";
+import DashboardTurista from "./pages/DashboardTurista";
+import DetalleServicio from "./pages/DetalleServicio";
+
 
 
 import './App.css'
@@ -48,6 +51,9 @@ function App() {
           <Route path="/Turista" element={<Turist />} />
           <Route path="/informacion" element={<Informacion />} />
           <Route path="/servicios-seguros" element={<ServiciosSeguros />} />
+          <Route path="/dashboard-turista" element={<DashboardTurista />} />
+          <Route path="/servicio/:id" element={<DetalleServicio />} />
+
         </Routes>
       </div>
       <Footer />
