@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form'; // <-- Importar Hook Form
 import { zodResolver } from '@hookform/resolvers/zod'; // <-- Resolver para Zod
 import * as z from 'zod'; // <-- Importar Zod
 import './styles/LoginPage.css'; 
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginSchema = z.object({
     email: z.string().email({ message: "Formato de correo inválido" }),
@@ -11,7 +13,9 @@ const LoginSchema = z.object({
 });
 
 function LoginPage() {
-    // 2. Integrar React Hook Form y Zod
+    const { login, loading, error } = useAuth();
+    const navigate = useNavigate();
+
     const { 
         register, 
         handleSubmit, 
@@ -20,11 +24,20 @@ function LoginPage() {
         resolver: zodResolver(LoginSchema), // Usar el esquema definido
     });
 
-    // Función que se ejecuta si la validación es exitosa
-    const onSubmit = (data) => {
-        console.log("Datos de Login Válidos:", data);
-        alert("¡Inicio de Sesión Válido!");
-        // Aquí iría la lógica de autenticación (API call)
+    const onSubmit = async (data) => {
+        try {
+            const response = await login(data);
+            const role = response?.user?.role || response?.user?.rol;
+            if (role === 'turista') {
+                navigate('/dashboard-turista');
+            } else if (role === 'empresa') {
+                navigate('/dashboard-empresa');
+            } else {
+                navigate('/dashboard-proveedor');
+            }
+        } catch (err) {
+            // error ya se maneja en el contexto
+        }
     };
 
     return (
@@ -69,8 +82,9 @@ function LoginPage() {
                     
                     {/* Botón de Registro */}
                     <button type="submit" className="btn-login-submit">
-                        Iniciar Sesión
+                        {loading ? 'Ingresando...' : 'Iniciar Sesión'}
                     </button>
+                    {error && <p className="error-message">{String(error)}</p>}
                     
                     {/* Enlaces de Recuperación / Registro */}
                     <div className="login-links">

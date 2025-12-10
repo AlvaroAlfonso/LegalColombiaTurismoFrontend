@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './styles/MainContent.css'; // Todos los estilos combinados irán aquí
 
 
@@ -28,6 +29,7 @@ const ProveedorContent = () => (
 
 function MainContent() {
 const [activeRole, setActiveRole] = useState('turista');
+const navigate = useNavigate();
 
   return (
     <main className="main-content">
@@ -39,7 +41,7 @@ const [activeRole, setActiveRole] = useState('turista');
           <p>
             Encuentra y reserva servicios turísticos 100% legales. ¡Dile adiós a las propinas exageradas y a los cobros ocultos!
           </p>
-          <button className="cta-button">
+          <button className="cta-button" onClick={() => navigate('/dashboard-turista')}>
             Explora Nuestros Servicios
           </button>
         </div>

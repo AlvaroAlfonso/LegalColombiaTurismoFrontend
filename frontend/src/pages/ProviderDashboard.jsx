@@ -1,11 +1,13 @@
 // src/pages/ProviderDashboard.jsx (CÓDIGO COMPLETO Y CORREGIDO)
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles/ProviderDashboard.css';
 
 // 🚨 IMPORTAR COMPONENTES NECESARIOS 🚨
 import ServiceForm from '../components/ServiceForm'; 
 import ProfileEditForm from '../components/ProfileEditForm'; 
+import { authApi, servicesApi } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 // -----------------------------
 // FUNCIÓN AUXILIAR: Renderiza estrellas para la puntuación
@@ -52,7 +54,7 @@ const ServiceItem = ({ service, onEdit, onDelete }) => (
             </button>
             <button 
                 className="btn-delete-service"
-                onClick={onDelete} // Handler sin funcionalidad por ahora
+                onClick={() => onDelete(service)}
                 style={{ padding: '8px 15px', backgroundColor: '#d32f2f', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
             >
                 🗑️ Eliminar
@@ -173,12 +175,7 @@ const ProfileView = ({ providerData, onEditClick }) => (
 // -----------------------------
 // COMPONENTE 2: VISTA DE SERVICIOS 
 // -----------------------------
-const ServicesView = ({ setActiveView, servicesList, onEditService }) => {
-    // Handler vacío para simular la eliminación (DELETE)
-    const handleDeleteService = () => {
-        alert("La función de ELIMINAR se integrará en el backend (DELETE request).");
-    };
-    
+const ServicesView = ({ setActiveView, servicesList, onEditService, onDeleteService }) => {
     return (
         <div className="dashboard-content-box">
             <h3>🗺️ Mis Servicios ({servicesList.length})</h3>
@@ -197,10 +194,10 @@ const ServicesView = ({ setActiveView, servicesList, onEditService }) => {
                 <div className="services-list-container">
                     {servicesList.map(service => (
                         <ServiceItem 
-                            key={service.id_registro_oferta} 
+                            key={service.id || service.id_registro_oferta} 
                             service={service} 
                             onEdit={onEditService} 
-                            onDelete={handleDeleteService} // Pasa el handler de eliminación (simulado)
+                            onDelete={onDeleteService}
                         />
                     ))}
                 </div>
@@ -345,54 +342,53 @@ const ReviewsView = () => {
 
 function ProviderDashboard() {
     const [activeView, setActiveView] = useState('profile'); 
-    
-    const [providerData, setProviderData] = useState({
-        nombre: "Juan",
-        apellido: "Pérez",
-        email: "juan.perez@turismo.com",
-        numeroTelefonico: "3105555555",
-        tipoIdentificacion: "CC",
-        numIdentificacion: "1010123456",
-        afiliadoSeguridadSocial: "si",
-        municipioTrabajo: "Cartagena",
-        // Estado de los documentos
-        fotoDocumento: 'cc_juan.jpg', 
-        fotoRut: null, 
-        fotoMatriculaComerciante: 'matricula_2024.pdf',
-        fotoPermisoAlcaldia: null, 
-    });
-    
-    // 🚨 DATOS DE SERVICIOS SIMULANDO card_servicio_venta 🚨
-    const [servicesList, setServicesList] = useState([
-        { 
-            id_registro_oferta: 1, 
-            titulo_card: "Tour Histórico a pie", 
-            descripcion_corta: "Recorrido por el centro amurallado.",
-            url_imagen_principal: '/img/tour1.jpg',
-            unidad_precio: 'por persona',
-            categoria_servicio: 'Tour',
-            precio_servicio: 50000, // Precio simulado para mostrar en la lista
-        },
-        { 
-            id_registro_oferta: 2, 
-            titulo_card: "Clase de Buceo Principiante", 
-            descripcion_corta: "Incluye equipo y certificado de inmersión.",
-            url_imagen_principal: '/img/buceo.jpg',
-            unidad_precio: 'por grupo',
-            categoria_servicio: 'Aventura',
-            precio_servicio: 250000, 
-        },
-    ]);
+    const { user } = useAuth();
+    const [providerData, setProviderData] = useState(null);
+    const [servicesList, setServicesList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
     const [serviceToEdit, setServiceToEdit] = useState(null);
 
 
+    useEffect(() => {
+        let active = true;
+        const loadData = async () => {
+            try {
+                setLoading(true);
+                const [profileRes, servicesRes] = await Promise.all([
+                    authApi.getProfile(),
+                    servicesApi.fetchServices({ mine: true }),
+                ]);
+                if (!active) return;
+                setProviderData(profileRes.data);
+                setServicesList(servicesRes.data?.results || servicesRes.data || []);
+            } catch (err) {
+                if (!active) return;
+                setError('No pudimos cargar tu información de prestador.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+        loadData();
+        return () => { active = false; };
+    }, []);
+
     // --- Handlers de Perfil ---
     const handleProfileSave = (updatedData) => {
-        // Lógica de backend para PUT / PATCH PERFIL
-        setProviderData(updatedData); 
-        setActiveView('profile');
-        alert("Perfil y Documentos actualizados correctamente.");
+        const formData = new FormData();
+        Object.entries(updatedData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                formData.append(key, value);
+            }
+        });
+        authApi.updateProfile(formData)
+            .then(({ data }) => {
+                setProviderData(data);
+                setActiveView('profile');
+            })
+            .catch(() => setError('No pudimos guardar el perfil.'))
+            .finally(() => setLoading(false));
     };
 
     const handleCancelForm = () => {
@@ -402,29 +398,49 @@ function ProviderDashboard() {
 
 
     // --- Handlers de Servicio ---
-    const handleServiceSubmission = (serviceData) => {
-        if (serviceToEdit) {
-            // LÓGICA DE EDICIÓN (PUT/PATCH)
-            const updatedList = servicesList.map(svc => 
-                svc.id_registro_oferta === serviceToEdit.id_registro_oferta ? { ...svc, ...serviceData } : svc
-            );
-            setServicesList(updatedList);
-            setServiceToEdit(null);
-            alert("¡Servicio editado con éxito!");
-            
-        } else {
-            // LÓGICA DE CREACIÓN (POST)
-            const newId = servicesList.length > 0 ? Math.max(...servicesList.map(s => s.id_registro_oferta)) + 1 : 1; 
-            // Añadimos el nuevo servicio usando el ID de la tabla
-            setServicesList([...servicesList, { id_registro_oferta: newId, ...serviceData }]);
-            alert("¡Servicio registrado con éxito! Pendiente de aprobación.");
+    const handleServiceSubmission = async (serviceData) => {
+        const formData = new FormData();
+        Object.entries(serviceData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) formData.append(key, value);
+        });
+
+        try {
+            setLoading(true);
+            if (serviceToEdit) {
+                const svcId = serviceToEdit.id || serviceToEdit.id_registro_oferta;
+                const { data } = await servicesApi.updateService(svcId, formData);
+                setServicesList((prev) =>
+                    prev.map((svc) => (svc.id === svcId || svc.id_registro_oferta === svcId ? data : svc)),
+                );
+                setServiceToEdit(null);
+            } else {
+                const { data } = await servicesApi.createService(formData);
+                setServicesList((prev) => [data, ...prev]);
+            }
+            setActiveView('services'); 
+        } catch (err) {
+            setError('No pudimos guardar el servicio. Revisa los datos.');
+        } finally {
+            setLoading(false);
         }
-        setActiveView('services'); 
     };
 
     const handleEditService = (service) => {
         setServiceToEdit(service);
         setActiveView('edit_service'); 
+    };
+
+    const handleDeleteService = async (service) => {
+        const svcId = service.id || service.id_registro_oferta;
+        try {
+            setLoading(true);
+            await servicesApi.deleteService(svcId);
+            setServicesList((prev) => prev.filter((s) => (s.id || s.id_registro_oferta) !== svcId));
+        } catch (err) {
+            setError('No pudimos eliminar el servicio.');
+        } finally {
+            setLoading(false);
+        }
     };
     
 
@@ -451,6 +467,7 @@ function ProviderDashboard() {
                     setActiveView={setActiveView} 
                     servicesList={servicesList}
                     onEditService={handleEditService}
+                    onDeleteService={handleDeleteService}
                 />; 
 
             case 'add_service':
@@ -474,6 +491,14 @@ function ProviderDashboard() {
                 />;
         }
     };
+
+    if (loading && !providerData) {
+        return <div className="dashboard-container">Cargando tu información...</div>;
+    }
+
+    if (error) {
+        return <div className="dashboard-container">{error}</div>;
+    }
 
     return (
         <div className="dashboard-container">

@@ -104,6 +104,7 @@ const ServiceForm = ({ initialData, isEditing, onServiceSubmit, onCancel }) => {
             unidad_precio: formData.unidad_precio,
             categoria_servicio: formData.categoria_servicio,
             estado_publicacion: formData.estado_publicacion,
+            imagen: formData.newImageFile || undefined,
             // Aquí se adjuntaría el archivo (formData.newImageFile)
             // Para la simulación en React, pasamos los datos planos:
             // Si hay nueva imagen, actualiza la URL con el nombre del archivo, sino, mantiene la vieja URL

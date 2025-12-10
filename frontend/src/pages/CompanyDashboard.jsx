@@ -1,11 +1,13 @@
 // src/pages/CompanyDashboard.jsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // Asegúrate de que tienes un archivo CSS para los estilos del dashboard (puede ser compartido o uno nuevo)
 import './styles/CompanyDashboard.css'; 
 
 import EmployeeForm from '../components/EmployeeForm'; // Formulario complejo para empleados
 import ServiceForm from '../components/ServiceForm'; // Reutilizamos el formulario de servicio individual
+import { authApi, servicesApi } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 // -----------------------------
 // VISTAS DEL DASHBOARD DE EMPRESA
@@ -86,7 +88,7 @@ const EmployeesView = ({ setActiveView }) => {
 };
 
 // 3. Gestión de Servicios de la Empresa
-const CompanyServicesView = ({ setActiveView }) => (
+const CompanyServicesView = ({ setActiveView, servicesList }) => (
     <div className="dashboard-content-box">
         <h3>🗺️ Servicios de la Empresa</h3>
         <button 
@@ -96,7 +98,17 @@ const CompanyServicesView = ({ setActiveView }) => (
         >
             ➕ Registrar Nuevo Servicio de la Empresa
         </button>
-        <p>Aquí se listarán los servicios que ofrece la empresa.</p>
+        {servicesList.length === 0 ? (
+            <p>Aún no has registrado servicios.</p>
+        ) : (
+            <ul>
+                {servicesList.map((svc) => (
+                    <li key={svc.id || svc.id_registro_oferta}>
+                        {svc.titulo_card || svc.nombre} — {svc.ciudad || 'Sin ciudad'}
+                    </li>
+                ))}
+            </ul>
+        )}
     </div>
 );
 
@@ -119,18 +131,35 @@ const CompanyReviewsView = () => (
 // -----------------------------
 
 function CompanyDashboard() {
-    // Añadimos 'reviews' a los posibles estados
     const [activeView, setActiveView] = useState('profile'); 
+    const { user } = useAuth();
+    const [companyData, setCompanyData] = useState(null);
+    const [servicesList, setServicesList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Datos de ejemplo para la Empresa Prestadora
-    const companyExampleData = {
-        razonSocial: "Aventura Colombia SAS",
-        nit: "900.123.456-7",
-        representanteNombre: "Carolina",
-        representanteApellido: "López",
-        email: "carolina.lopez@aventura.com",
-        ciudad: "Medellín",
-    };
+    useEffect(() => {
+        let active = true;
+        const load = async () => {
+            try {
+                setLoading(true);
+                const [profileRes, servicesRes] = await Promise.all([
+                    authApi.getProfile(),
+                    servicesApi.fetchServices({ mine: true }),
+                ]);
+                if (!active) return;
+                setCompanyData(profileRes.data);
+                setServicesList(servicesRes.data?.results || servicesRes.data || []);
+            } catch (err) {
+                if (!active) return;
+                setError('No pudimos cargar la información de la empresa.');
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+        load();
+        return () => { active = false; };
+    }, []);
 
     // Funciones de manejo de formularios (iguales que antes)
     const handleEmployeeSubmission = (employeeData) => {
@@ -139,20 +168,31 @@ function CompanyDashboard() {
         alert("Empleado registrado con éxito. Revisar documentación.");
     };
 
-    const handleServiceSubmission = (serviceData) => {
-        console.log("SERVICIO DE EMPRESA REGISTRADO:", serviceData);
-        setActiveView('services');
-        alert("Servicio registrado con éxito.");
+    const handleServiceSubmission = async (serviceData) => {
+        const formData = new FormData();
+        Object.entries(serviceData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) formData.append(key, value);
+        });
+        try {
+            setLoading(true);
+            const { data } = await servicesApi.createService(formData);
+            setServicesList((prev) => [data, ...prev]);
+            setActiveView('services');
+        } catch (err) {
+            setError('No pudimos registrar el servicio.');
+        } finally {
+            setLoading(false);
+        }
     };
 
 
     const renderContent = () => {
         switch (activeView) {
             case 'profile':
-                return <CompanyProfileView companyData={companyExampleData} />;
+                return <CompanyProfileView companyData={companyData || {}} />;
                 
             case 'services':
-                return <CompanyServicesView setActiveView={setActiveView} />; 
+                return <CompanyServicesView setActiveView={setActiveView} servicesList={servicesList} />; 
 
             case 'add_service':
                 return <ServiceForm 
@@ -174,9 +214,17 @@ function CompanyDashboard() {
                 return <CompanyReviewsView />;
             
             default:
-                return <CompanyProfileView companyData={companyExampleData} />;
+                return <CompanyProfileView companyData={companyData || {}} />;
         }
     };
+
+    if (loading && !companyData) {
+        return <div className="dashboard-container">Cargando panel de empresa...</div>;
+    }
+
+    if (error) {
+        return <div className="dashboard-container">{error}</div>;
+    }
 
     return (
         <div className="dashboard-container">

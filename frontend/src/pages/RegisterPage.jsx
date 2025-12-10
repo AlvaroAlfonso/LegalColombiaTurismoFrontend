@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import './styles/RegisterPage.css';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 
 // Esquema Base (Datos Comunes para TODOS)
@@ -85,6 +87,19 @@ const EmpresaPrestadoraSchema = BaseSchema.extend({
     
     // Se eliminan 'codigoMatriculaMercantil' que es redundante con 'numeroMatriculaMercantil'
 });
+
+const toFormData = (data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+        if (value === undefined || value === null) return;
+        if (value instanceof FileList) {
+            if (value.length > 0) formData.append(key, value[0]);
+            return;
+        }
+        formData.append(key, value);
+    });
+    return formData;
+};
 
 // FRONTEND/src/pages/RegisterPage.jsx (DatosGenerales)
 
@@ -169,7 +184,7 @@ const DatosGenerales = ({ register, errors, isProvisor = false }) => (
 // =========================================================
 // FRONTEND/src/pages/RegisterPage.jsx (TuristaForm)
 
-const TuristaForm = () => {
+const TuristaForm = ({ onRegister, loading, error }) => {
     const { 
         register, 
         handleSubmit, 
@@ -178,11 +193,10 @@ const TuristaForm = () => {
         resolver: zodResolver(TuristaSchema),
     });
 
-    const onSubmit = (data) => {
-        // Añadir tipoUsuario al objeto de datos antes de enviarlo al backend
+    const onSubmit = async (data) => {
         const finalData = { ...data, tipoUsuario: 'turista' }; 
-        console.log("Datos Turista Válidos:", finalData);
-        alert("¡Registro de Turista Válido!");
+        const formData = toFormData(finalData);
+        await onRegister(formData, 'turista');
     };
 
     return (
@@ -235,14 +249,17 @@ const TuristaForm = () => {
                     
                 </div>
             </div>
-            <button type="submit" className="btn-register-submit">REGISTRARME COMO TURISTA</button>
+            <button type="submit" className="btn-register-submit" disabled={loading}>
+                {loading ? 'Enviando...' : 'REGISTRARME COMO TURISTA'}
+            </button>
+            {error && <p className="error-message">{String(error)}</p>}
         </form>
     );
 };
 
 const COLOMBIAN_CITIES = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena', 'Cúcuta', 'Bucaramanga', 'Pereira', 'Santa Marta', 'Otro'];
 
-const ProvisorIndividualForm = ({ onProfileChange }) => {
+const ProvisorIndividualForm = ({ onProfileChange, onRegister, loading, error }) => {
     const { 
         register, 
         handleSubmit, 
@@ -251,11 +268,10 @@ const ProvisorIndividualForm = ({ onProfileChange }) => {
         resolver: zodResolver(ProvisorIndividualSchema),
     });
 
-    const onSubmit = (data) => {
-        // Añadir tipoUsuario al objeto de datos antes de enviarlo al backend
+    const onSubmit = async (data) => {
         const finalData = { ...data, tipoUsuario: 'prestador_servicio' };
-        console.log("Datos Prestador Individual Válidos:", finalData);
-        alert("¡Registro de Prestador Individual Válido!");
+        const formData = toFormData(finalData);
+        await onRegister(formData, 'prestador_servicio');
     };
     
     return (
@@ -326,14 +342,17 @@ const ProvisorIndividualForm = ({ onProfileChange }) => {
                     
                 </div>
             </div>
-            <button type="submit" className="btn-register-submit">REGISTRARME COMO PRESTADOR INDIVIDUAL</button>
+            <button type="submit" className="btn-register-submit" disabled={loading}>
+                {loading ? 'Enviando...' : 'REGISTRARME COMO PRESTADOR INDIVIDUAL'}
+            </button>
+            {error && <p className="error-message">{String(error)}</p>}
         </form>
     );
 };
 // =========================================================
 // COMPONENTE 4: FORMULARIO EMPRESA PRESTADORA (CORREGIDO)
 // =========================================================
-const EmpresaPrestadoraForm = ({ onProfileChange }) => {
+const EmpresaPrestadoraForm = ({ onProfileChange, onRegister, loading, error }) => {
     const { 
         register, 
         handleSubmit, 
@@ -348,11 +367,10 @@ const EmpresaPrestadoraForm = ({ onProfileChange }) => {
         "Salud", "Otro" // Añadí 'Otro' por si acaso
     ];
 
-    const onSubmit = (data) => {
-        // Añadir tipoUsuario al objeto de datos antes de enviarlo al backend
+    const onSubmit = async (data) => {
         const finalData = { ...data, tipoUsuario: 'prestador_servicio' };
-        console.log("Datos Empresa Prestadora Válidos:", finalData);
-        alert("¡Registro de Empresa Prestadora Válido!");
+        const formData = toFormData(finalData);
+        await onRegister(formData, 'empresa');
     };
 
     return (
@@ -419,7 +437,10 @@ const EmpresaPrestadoraForm = ({ onProfileChange }) => {
                     
                 </div>
             </div>
-            <button type="submit" className="btn-register-submit">REGISTRAR MI EMPRESA PRESTADORA</button>
+            <button type="submit" className="btn-register-submit" disabled={loading}>
+                {loading ? 'Enviando...' : 'REGISTRAR MI EMPRESA PRESTADORA'}
+            </button>
+            {error && <p className="error-message">{String(error)}</p>}
         </form>
     );
 };
@@ -454,15 +475,29 @@ const ProvisorTypeSelector = ({ onProfileSelect }) => (
 function RegisterPage() {
     // Estado para controlar el rol seleccionado: null, 'turista', 'proveedor_selector', 'individual', 'empresa'
     const [selectedRole, setSelectedRole] = useState(null); 
+    const { register: registerUser, loading, error } = useAuth();
+    const navigate = useNavigate();
+
+    const handleRegister = async (formData, role) => {
+        await registerUser(formData);
+        // Redirige según rol después de registro
+        if (role === 'turista') {
+            navigate('/dashboard-turista');
+        } else if (role === 'empresa') {
+            navigate('/dashboard-empresa');
+        } else {
+            navigate('/dashboard-proveedor');
+        }
+    };
 
     const renderForm = () => {
         switch (selectedRole) {
             case 'turista':
-                return <TuristaForm />;
+                return <TuristaForm onRegister={handleRegister} loading={loading} error={error} />;
             case 'individual':
-                return <ProvisorIndividualForm onProfileChange={setSelectedRole} />;
+                return <ProvisorIndividualForm onProfileChange={setSelectedRole} onRegister={handleRegister} loading={loading} error={error} />;
             case 'empresa':
-                return <EmpresaPrestadoraForm onProfileChange={setSelectedRole} />;
+                return <EmpresaPrestadoraForm onProfileChange={setSelectedRole} onRegister={handleRegister} loading={loading} error={error} />;
             case 'proveedor_selector':
                 return <ProvisorTypeSelector onProfileSelect={setSelectedRole} />;
             case null:
