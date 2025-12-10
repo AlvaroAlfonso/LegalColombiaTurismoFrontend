@@ -1,72 +1,192 @@
-// src/pages/ProviderDashboard.jsx
+// src/pages/ProviderDashboard.jsx (CÓDIGO COMPLETO Y CORREGIDO)
 
 import React, { useState } from 'react';
 import './styles/ProviderDashboard.css';
 
 // 🚨 IMPORTAR COMPONENTES NECESARIOS 🚨
-// 1. Asume que ServiceForm está en src/components/ServiceForm.jsx
 import ServiceForm from '../components/ServiceForm'; 
+import ProfileEditForm from '../components/ProfileEditForm'; 
 
 // -----------------------------
-// COMPONENTE 1: VISTA DE PERFIL
+// FUNCIÓN AUXILIAR: Renderiza estrellas para la puntuación
 // -----------------------------
-const ProfileView = ({ providerData }) => (
-    <div className="dashboard-content-box">
-        <h3>👤 Mi Perfil (Datos Personales)</h3>
-        <p>Aquí se pueden editar tus datos personales y credenciales.</p>
-        <div className="profile-details-grid">
-            <div>
-                <strong>Nombre Completo:</strong> {providerData.nombre} {providerData.apellido}
-            </div>
-            <div>
-                <strong>Email:</strong> {providerData.email}
-            </div>
-            <div>
-                <strong>Teléfono:</strong> {providerData.numeroTelefonico}
-            </div>
-            <div>
-                <strong>Identificación:</strong> {providerData.tipoIdentificacion} - {providerData.numIdentificacion}
-            </div>
-            <div>
-                <strong>Afiliado a Seguridad Social:</strong> {providerData.afiliadoSeguridadSocial === 'si' ? 'Sí' : 'No'}
-            </div>
-            <div>
-                <strong>Municipio de Operación:</strong> {providerData.municipioTrabajo}
-            </div>
-            <div className="full-row">
-                <button className="btn-edit-profile">Editar Datos</button>
-            </div>
+const StarRating = ({ score }) => {
+    const totalStars = 5;
+    const filledStars = '⭐'.repeat(score);
+    const emptyStars = '☆'.repeat(totalStars - score);
+    return <span>{filledStars}{emptyStars} ({score}/5)</span>;
+};
+
+// -----------------------------
+// COMPONENTE AUXILIAR: Elemento de Servicio Editable (CON BOTÓN ELIMINAR)
+// -----------------------------
+// Nota: Usamos campos simulados para el Dashboard basados en la tabla card_servicio_venta
+const ServiceItem = ({ service, onEdit, onDelete }) => (
+    <div className="service-item" style={{ 
+        border: '1px solid #e0e0e0', 
+        padding: '15px', 
+        marginBottom: '10px', 
+        borderRadius: '5px', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        backgroundColor: '#fff'
+    }}>
+        <div>
+            {/* Usamos el TITULO_CARD para mostrar el nombre */}
+            <h4>{service.titulo_card}</h4>
+            <p>Categoría: {service.categoria_servicio}</p>
+            {/* El precio se muestra asumiendo que el valor numérico está en precio_servicio (simulado) y unidad_precio (texto) */}
+            <p>
+                Precio: ${service.precio_servicio ? service.precio_servicio.toLocaleString('es-CO') : 'N/A'} ({service.unidad_precio})
+            </p>
+            <p style={{ fontSize: '0.9em', color: '#666' }}>ID: {service.id_registro_oferta}</p>
         </div>
-        
-        <h4 style={{ marginTop: '20px' }}>📁 Documentación</h4>
-        <p>Los documentos cargados durante el registro están listos para ser verificados.</p>
-        <ul>
-            <li>Documento de Identificación (fotoDocumento)</li>
-            <li>RUT (fotoRut)</li>
-            <li>Matrícula Comerciante (fotoMatriculaComerciante)</li>
-            <li>Permiso de Alcaldía (fotoPermisoAlcaldia)</li>
-        </ul>
-        <button className="btn-manage-docs">Gestionar Documentos</button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+            <button 
+                className="btn-edit-service"
+                onClick={() => onEdit(service)} 
+                style={{ padding: '8px 15px', backgroundColor: '#3f51b5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+                ✏️ Editar
+            </button>
+            <button 
+                className="btn-delete-service"
+                onClick={onDelete} // Handler sin funcionalidad por ahora
+                style={{ padding: '8px 15px', backgroundColor: '#d32f2f', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+                🗑️ Eliminar
+            </button>
+        </div>
+    </div>
+);
+
+
+// -----------------------------
+// COMPONENTE AUXILIAR para mejorar el estilo de la etiqueta de campo
+// -----------------------------
+const ProfileField = ({ label, children }) => (
+    <div>
+        <label style={{ display: 'block', fontWeight: 'bold', color: '#555', marginBottom: '3px', fontSize: '0.9em' }}>
+            {label}
+        </label>
+        <p style={{ margin: 0, padding: '5px 0', borderBottom: '1px dotted #ccc' }}>
+            {children}
+        </p>
     </div>
 );
 
 // -----------------------------
-// COMPONENTE 2: VISTA DE SERVICIOS (MODIFICADA)
-// Ahora recibe setActiveView para cambiar a la vista del formulario.
+// COMPONENTE AUXILIAR para el estado de los documentos
 // -----------------------------
-const ServicesView = ({ setActiveView }) => {
-    // Aquí iría la lista de servicios existentes (simulación)
-    const servicesList = []; 
+const DocumentStatus = ({ label, status }) => {
+    const isLoaded = !!status;
+    const color = isLoaded ? '#004d40' : '#d32f2f'; // Verde oscuro para cargado, Rojo para pendiente
+    const statusText = isLoaded ? 'Cargado' : 'Pendiente';
+    
+    return (
+        <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ width: '250px', fontWeight: 'bold', marginRight: '10px' }}>{label}:</span>
+            <span style={{ color: color, fontWeight: 'bold' }}>
+                {isLoaded ? '✅' : '❌'} {statusText}
+            </span>
+        </li>
+    );
+};
 
+
+// -----------------------------
+// COMPONENTE 1: VISTA DE PERFIL (MEJORADA VISUALMENTE)
+// -----------------------------
+const ProfileView = ({ providerData, onEditClick }) => (
+    <div className="dashboard-content-box">
+        
+        {/* === SECCIÓN DE DATOS PERSONALES (Formato Grid Mejorado) === */}
+        <h3 style={{ borderBottom: '2px solid #004d40', paddingBottom: '10px' }}>
+            👤 Mis Datos Personales
+        </h3>
+        
+        <div 
+            style={{ 
+                marginBottom: '30px', 
+                padding: '20px', 
+                border: '1px solid #e0e0e0', 
+                borderRadius: '8px', 
+                backgroundColor: '#f5f5f5',
+                // Estilo de cuadrícula (Grid) para mejor alineación
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr', // Dos columnas de igual tamaño
+                gap: '15px 30px' // Separación vertical y horizontal
+            }}
+        >
+            {/* Fila 1 */}
+            <ProfileField label="Nombre Completo">
+                {providerData.nombre} {providerData.apellido}
+            </ProfileField>
+            <ProfileField label="Email de Contacto">
+                {providerData.email}
+            </ProfileField>
+
+            {/* Fila 2 */}
+            <ProfileField label="Tipo / Núm. Identificación">
+                **{providerData.tipoIdentificacion}**: {providerData.numIdentificacion}
+            </ProfileField>
+            <ProfileField label="Teléfono">
+                {providerData.numeroTelefonico}
+            </ProfileField>
+            
+            {/* Fila 3 */}
+            <ProfileField label="Municipio de Trabajo">
+                {providerData.municipioTrabajo}
+            </ProfileField>
+            <ProfileField label="Afiliado a Seguridad Social">
+                <span style={{ fontWeight: 'bold', color: providerData.afiliadoSeguridadSocial === 'si' ? '#004d40' : '#d32f2f' }}>
+                    {providerData.afiliadoSeguridadSocial === 'si' ? '✅ Sí' : '❌ No'}
+                </span>
+            </ProfileField>
+        </div>
+
+        {/* === SECCIÓN DE DOCUMENTACIÓN === */}
+        <h3 style={{ borderBottom: '2px solid #004d40', paddingBottom: '10px', marginTop: '30px' }}>
+            📁 Documentación Legal
+        </h3>
+        <p>
+            Revisa el estado de tus documentos. Recuerda que todos deben estar **Cargados** para la activación de tus servicios.
+        </p>
+        <ul style={{ listStyleType: 'none', paddingLeft: '0' }}>
+            <DocumentStatus label="Documento de Identificación (fotoDocumento)" status={providerData.fotoDocumento} />
+            <DocumentStatus label="RUT (fotoRut)" status={providerData.fotoRut} />
+            <DocumentStatus label="Matrícula Comerciante (fotoMatriculaComerciante)" status={providerData.fotoMatriculaComerciante} />
+            <DocumentStatus label="Permiso de Alcaldía (fotoPermisoAlcaldia)" status={providerData.fotoPermisoAlcaldia} />
+        </ul>
+        <button 
+            className="btn-manage-docs" 
+            onClick={onEditClick} 
+            style={{ marginTop: '20px', backgroundColor: '#3f51b5', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}
+        >
+            ✏️ Gestionar Documentos y Datos
+        </button>
+    </div>
+);
+
+
+// -----------------------------
+// COMPONENTE 2: VISTA DE SERVICIOS 
+// -----------------------------
+const ServicesView = ({ setActiveView, servicesList, onEditService }) => {
+    // Handler vacío para simular la eliminación (DELETE)
+    const handleDeleteService = () => {
+        alert("La función de ELIMINAR se integrará en el backend (DELETE request).");
+    };
+    
     return (
         <div className="dashboard-content-box">
-            <h3>🗺️ Mis Servicios</h3>
+            <h3>🗺️ Mis Servicios ({servicesList.length})</h3>
             
-            {/* 🚨 BOTÓN PARA CAMBIAR A LA VISTA DEL FORMULARIO 🚨 */}
             <button 
                 className="btn-primary-action"
                 onClick={() => setActiveView('add_service')} 
-                style={{marginBottom: '20px'}}
+                style={{marginBottom: '20px', backgroundColor: '#4caf50', color: 'white'}}
             >
                 ➕ Agregar Nuevo Servicio
             </button>
@@ -74,35 +194,159 @@ const ServicesView = ({ setActiveView }) => {
             {servicesList.length === 0 ? (
                 <p>Aún no has registrado ningún servicio. ¡Comienza ahora!</p>
             ) : (
-                <p>Lista de servicios existentes...</p> // Aquí se renderizarían los servicios
+                <div className="services-list-container">
+                    {servicesList.map(service => (
+                        <ServiceItem 
+                            key={service.id_registro_oferta} 
+                            service={service} 
+                            onEdit={onEditService} 
+                            onDelete={handleDeleteService} // Pasa el handler de eliminación (simulado)
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
+
+// -----------------------------
+// COMPONENTE AUXILIAR: Item de Comentario (Estilos Mejorados)
+// -----------------------------
+const ReviewItem = ({ review }) => {
+    const touristName = `Turista #${review.id_turistas_fk}`;
+    
+    return (
+        <div className="review-card" style={{
+            border: '1px solid #e0e0e0',
+            padding: '20px',
+            marginBottom: '20px',
+            borderRadius: '8px',
+            backgroundColor: '#ffffff',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+        }}>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0', paddingBottom: '10px', marginBottom: '15px' }}>
+                <h4 style={{ margin: 0, color: '#004d40' }}>
+                    <span style={{ marginRight: '10px' }}>👤</span> {touristName}
+                </h4>
+                <p style={{ margin: 0, fontSize: '0.9em', color: '#777' }}>
+                    Fecha: {review.fecha_calificacion}
+                </p>
+            </div>
+
+            {/* PUNTUACIÓN GENERAL EN GRANDE */}
+            <div style={{ marginBottom: '15px' }}>
+                <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.1em', color: '#ff9800' }}>
+                    Puntuación General: <StarRating score={review.puntuacion_general} />
+                </p>
+            </div>
+            
+            {/* FEEDBACK */}
+            <div style={{ backgroundColor: '#e8f5e9', padding: '15px', borderRadius: '6px', marginBottom: '15px' }}>
+                <p style={{ margin: 0, fontStyle: 'italic', color: '#333' }}>
+                    **"** {review.feedback_empresa} **"**
+                </p>
+            </div>
+
+            {/* PUNTUACIONES DETALLADAS */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.95em' }}>
+                
+                <p style={{ margin: 0 }}>
+                    **📜 Certificados:** <StarRating score={review.puntuacion_certificados} />
+                </p>
+                <p style={{ margin: 0 }}>
+                    **⏱️ Puntualidad:** <StarRating score={review.calificacion_puntualidad} />
+                </p>
+                <p style={{ margin: 0 }}>
+                    **🧼 Limpieza:** <StarRating score={review.calificacion_limpieza} />
+                </p>
+            </div>
+
+        </div>
+    );
+};
+
+
+// -----------------------------
+// COMPONENTE 3: VISTA DE COMENTARIOS
+// -----------------------------
+const ReviewsView = () => {
+    // 🚨 Datos de comentarios simulados, con la estructura de la tabla 'calificacion_servicio_usuario' 🚨
+    const simulatedReviews = [
+        { 
+            id_calificacion: 1, 
+            puntuacion_general: 5, 
+            feedback_empresa: "El tour fue impecable. Muy puntual y todo limpio. ¡Recomendado!", 
+            puntuacion_certificados: 5, 
+            calificacion_puntualidad: 5, 
+            calificacion_limpieza: 5, 
+            fecha_calificacion: "2025-12-05", 
+            id_card_servicio_fk: 1, 
+            id_turistas_fk: 101 
+        },
+        { 
+            id_calificacion: 2, 
+            puntuacion_general: 4, 
+            feedback_empresa: "Buena atención, pero el inicio de la actividad se retrasó 15 minutos.", 
+            puntuacion_certificados: 5, 
+            calificacion_puntualidad: 3, 
+            calificacion_limpieza: 4, 
+            fecha_calificacion: "2025-11-20", 
+            id_card_servicio_fk: 2, 
+            id_turistas_fk: 102 
+        },
+    ];
+    
+    // Cálculo de promedio
+    const totalScore = simulatedReviews.reduce((sum, review) => sum + review.puntuacion_general, 0);
+    const averageScore = simulatedReviews.length > 0 ? (totalScore / simulatedReviews.length).toFixed(1) : 0;
+    
+    return (
+        <div className="dashboard-content-box">
+            <h3 style={{ borderBottom: '2px solid #004d40', paddingBottom: '10px' }}>
+                ⭐ Comentarios y Reseñas ({simulatedReviews.length})
+            </h3>
+            
+            {simulatedReviews.length > 0 && (
+                <div style={{ 
+                    marginBottom: '20px', 
+                    padding: '15px', 
+                    backgroundColor: '#e3f2fd', 
+                    borderRadius: '8px'
+                }}>
+                    <h4 style={{ margin: 0, color: '#1565c0' }}>
+                        Puntuación Promedio General: {averageScore} / 5
+                    </h4>
+                    <p style={{ margin: 0, color: '#1565c0', fontSize: '0.9em' }}>
+                        Basado en {simulatedReviews.length} opiniones.
+                    </p>
+                </div>
+            )}
+            
+            {simulatedReviews.length === 0 ? (
+                <p style={{ padding: '20px', textAlign: 'center', border: '1px dashed #ccc' }}>
+                    **(No hay comentarios aún. ¡Sigue prestando servicios de alta calidad!)**
+                </p>
+            ) : (
+                <div className="reviews-list-container">
+                    {simulatedReviews.map(review => (
+                        <ReviewItem key={review.id_calificacion} review={review} />
+                    ))}
+                </div>
             )}
         </div>
     );
 };
 
 // -----------------------------
-// COMPONENTE 3: VISTA DE COMENTARIOS
-// -----------------------------
-const ReviewsView = () => (
-    <div className="dashboard-content-box">
-        <h3>⭐ Comentarios de Turistas</h3>
-        <p>Aquí verás las opiniones y calificaciones que los turistas han dejado sobre tu servicio.</p>
-        <p>**(No hay comentarios aún)**</p>
-    </div>
-);
-
-
-// -----------------------------
-// COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL (ProviderDashboard)
 // -----------------------------
 
 function ProviderDashboard() {
-    // 1. Estado para manejar la vista activa (añadimos 'add_service')
-    // Posibles estados: 'profile', 'services', 'reviews', 'add_service'
     const [activeView, setActiveView] = useState('profile'); 
-
-    // 2. Datos de ejemplo del prestador
-    const providerExampleData = {
+    
+    const [providerData, setProviderData] = useState({
         nombre: "Juan",
         apellido: "Pérez",
         email: "juan.perez@turismo.com",
@@ -111,42 +355,123 @@ function ProviderDashboard() {
         numIdentificacion: "1010123456",
         afiliadoSeguridadSocial: "si",
         municipioTrabajo: "Cartagena",
-        // Aquí irían otros campos, incluyendo el tipoUsuario: 'prestador_servicio'
-    };
+        // Estado de los documentos
+        fotoDocumento: 'cc_juan.jpg', 
+        fotoRut: null, 
+        fotoMatriculaComerciante: 'matricula_2024.pdf',
+        fotoPermisoAlcaldia: null, 
+    });
     
-    // 3. 🚨 FUNCIÓN PARA MANEJAR EL ENVÍO DEL FORMULARIO DE SERVICIO 🚨
-    const handleServiceSubmission = (serviceData) => {
-        // Aquí se enviaría el servicio a tu API/backend.
-        console.log("SERVICIO REGISTRADO Y LISTO PARA ENVIAR:", serviceData);
-        
-        // Volver a la lista de servicios después del envío
-        setActiveView('services'); 
-        alert("¡Servicio registrado con éxito! Pendiente de aprobación.");
+    // 🚨 DATOS DE SERVICIOS SIMULANDO card_servicio_venta 🚨
+    const [servicesList, setServicesList] = useState([
+        { 
+            id_registro_oferta: 1, 
+            titulo_card: "Tour Histórico a pie", 
+            descripcion_corta: "Recorrido por el centro amurallado.",
+            url_imagen_principal: '/img/tour1.jpg',
+            unidad_precio: 'por persona',
+            categoria_servicio: 'Tour',
+            precio_servicio: 50000, // Precio simulado para mostrar en la lista
+        },
+        { 
+            id_registro_oferta: 2, 
+            titulo_card: "Clase de Buceo Principiante", 
+            descripcion_corta: "Incluye equipo y certificado de inmersión.",
+            url_imagen_principal: '/img/buceo.jpg',
+            unidad_precio: 'por grupo',
+            categoria_servicio: 'Aventura',
+            precio_servicio: 250000, 
+        },
+    ]);
+    
+    const [serviceToEdit, setServiceToEdit] = useState(null);
+
+
+    // --- Handlers de Perfil ---
+    const handleProfileSave = (updatedData) => {
+        // Lógica de backend para PUT / PATCH PERFIL
+        setProviderData(updatedData); 
+        setActiveView('profile');
+        alert("Perfil y Documentos actualizados correctamente.");
     };
 
+    const handleCancelForm = () => {
+        setServiceToEdit(null); 
+        setActiveView(activeView.includes('profile') || activeView.includes('edit_profile') ? 'profile' : 'services');
+    }
+
+
+    // --- Handlers de Servicio ---
+    const handleServiceSubmission = (serviceData) => {
+        if (serviceToEdit) {
+            // LÓGICA DE EDICIÓN (PUT/PATCH)
+            const updatedList = servicesList.map(svc => 
+                svc.id_registro_oferta === serviceToEdit.id_registro_oferta ? { ...svc, ...serviceData } : svc
+            );
+            setServicesList(updatedList);
+            setServiceToEdit(null);
+            alert("¡Servicio editado con éxito!");
+            
+        } else {
+            // LÓGICA DE CREACIÓN (POST)
+            const newId = servicesList.length > 0 ? Math.max(...servicesList.map(s => s.id_registro_oferta)) + 1 : 1; 
+            // Añadimos el nuevo servicio usando el ID de la tabla
+            setServicesList([...servicesList, { id_registro_oferta: newId, ...serviceData }]);
+            alert("¡Servicio registrado con éxito! Pendiente de aprobación.");
+        }
+        setActiveView('services'); 
+    };
+
+    const handleEditService = (service) => {
+        setServiceToEdit(service);
+        setActiveView('edit_service'); 
+    };
+    
 
     // 4. Función para renderizar el contenido de la vista activa
     const renderContent = () => {
         switch (activeView) {
             case 'profile':
-                return <ProfileView providerData={providerExampleData} />;
+                return <ProfileView 
+                    providerData={providerData} 
+                    onEditClick={() => setActiveView('edit_profile')} 
+                />;
+            
+            case 'edit_profile':
+                // FORMULARIO DE EDICIÓN DE PERFIL/DOCUMENTOS
+                return <ProfileEditForm 
+                    providerData={providerData} 
+                    onSave={handleProfileSave}
+                    onCancel={handleCancelForm}
+                />;
                 
             case 'services':
-                // Pasamos setActiveView para que ServicesView pueda cambiar la vista
-                return <ServicesView setActiveView={setActiveView} />; 
+                // VISTA: Administrar Servicios (con lista, editar, eliminar)
+                return <ServicesView 
+                    setActiveView={setActiveView} 
+                    servicesList={servicesList}
+                    onEditService={handleEditService}
+                />; 
 
             case 'add_service':
-                // 🚨 RENDERIZAR EL FORMULARIO DE SERVICIO 🚨
+            case 'edit_service':
+                // VISTA: Formulario de Servicio (usa ServiceForm)
                 return <ServiceForm 
+                    initialData={serviceToEdit} 
+                    isEditing={!!serviceToEdit} 
                     onServiceSubmit={handleServiceSubmission} 
-                    onCancel={() => setActiveView('services')} 
+                    onCancel={handleCancelForm} 
                 />;
                 
             case 'reviews':
+                // VISTA: Comentarios y Reseñas
                 return <ReviewsView />;
                 
             default:
-                return <ProfileView providerData={providerExampleData} />;
+                return <ProfileView 
+                    providerData={providerData} 
+                    onEditClick={() => setActiveView('edit_profile')} 
+                />;
         }
     };
 
@@ -157,18 +482,17 @@ function ProviderDashboard() {
             <aside className="dashboard-sidebar">
                 <div className="sidebar-header">
                     <h2>Panel de Prestador</h2>
-                    <p className="welcome-message">Bienvenido, {providerExampleData.nombre}</p>
+                    <p className="welcome-message">Bienvenido, {providerData.nombre}</p>
                 </div>
                 <nav className="sidebar-nav">
                     <button 
-                        className={`nav-item ${activeView === 'profile' ? 'active' : ''}`}
+                        className={`nav-item ${activeView === 'profile' || activeView === 'edit_profile' ? 'active' : ''}`}
                         onClick={() => setActiveView('profile')}
                     >
                         👤 Mi Perfil
                     </button>
-                    {/* 🚨 Resaltar 'Administrar Servicios' también cuando se está en el formulario 🚨 */}
                     <button 
-                        className={`nav-item ${activeView === 'services' || activeView === 'add_service' ? 'active' : ''}`}
+                        className={`nav-item ${activeView === 'services' || activeView === 'add_service' || activeView === 'edit_service' ? 'active' : ''}`}
                         onClick={() => setActiveView('services')}
                     >
                         🗺️ Administrar Servicios

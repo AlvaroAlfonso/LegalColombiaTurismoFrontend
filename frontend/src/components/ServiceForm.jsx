@@ -1,120 +1,250 @@
-// src/components/ServiceForm.jsx (ARCHIVO CORREGIDO)
+// src/components/ServiceForm.jsx
+import React, { useState, useEffect } from 'react';
+import './styles/ServiceForm.css'; // Usaremos un archivo CSS para los estilos
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+// Lista simulada de categorías (basada en la imagen de categorías que enviaste)
+const CATEGORIES = [
+    { value: 'HOSPEDAJE', label: '🛌 Hospedaje Certificado' },
+    { value: 'AGENCIAS_TOURS', label: '⛵ Agencias & Tours' },
+    { value: 'GUIAS', label: '🚶 Guías Expertos' },
+    { value: 'TRANSPORTE', label: '🚗 Transporte Seguro' },
+    { value: 'AVENTURA_RECREACION', label: '🚴 Aventura & Recreación' },
+    { value: 'SALUD_BIENESTAR', label: '❤️ Salud & Bienestar' },
+];
 
-// 🚨 IMPORTACIÓN CORREGIDA 
-// 🚨 AJUSTA ESTA RUTA según donde hayas guardado ServiceSchema.js
-import { ServiceSchema } from '../schemas/ServiceSchema'; 
+// Lista simulada de unidades de precio
+const PRICE_UNITS = [
+    { value: 'por persona', label: 'Por persona' },
+    { value: 'por grupo', label: 'Por grupo' },
+    { value: 'por hora', label: 'Por hora' },
+    { value: 'por noche', label: 'Por noche' },
+];
 
-
-// Categorías disponibles
-const CATEGORIES = ['Hospedaje', 'Tours', 'Guías', 'Transporte', 'Aventura', 'Salud', 'Otro'];
-
-const ServiceForm = ({ onServiceSubmit, onCancel }) => {
-    const { 
-        register, 
-        handleSubmit, 
-        formState: { errors } 
-    } = useForm({
-        // La importación ya está limpia y correcta
-        resolver: zodResolver(ServiceSchema), 
-        defaultValues: {
-            // Nota: Para los campos number en defaultValues, es mejor usar `undefined` 
-            // o 0 si la validación Zod no falla con 0, pero `react-hook-form`
-            // intentará convertir el string de input a número si usas valueAsNumber: true.
-            precio: undefined, 
-            cantidadServicios: undefined, 
-            estadoPublicacion: 'activo',
-        }
+const ServiceForm = ({ initialData, isEditing, onServiceSubmit, onCancel }) => {
+    // Inicializar el estado con los datos existentes o campos vacíos para un nuevo servicio
+    const [formData, setFormData] = useState({
+        titulo_card: initialData?.titulo_card || '',
+        descripcion_corta: initialData?.descripcion_corta || '',
+        precio_servicio: initialData?.precio_servicio || '', // Lo llamaremos precio_servicio internamente
+        unidad_precio: initialData?.unidad_precio || PRICE_UNITS[0].value,
+        categoria_servicio: initialData?.categoria_servicio || CATEGORIES[0].value,
+        url_imagen_principal: initialData?.url_imagen_principal || '',
+        estado_publicacion: initialData?.estado_publicacion ?? true, // Por defecto, true si es nuevo
+        newImageFile: null, // Para manejar la subida de un nuevo archivo de imagen
     });
+    
+    // Estado para manejar si el precio es un número válido
+    const [priceError, setPriceError] = useState('');
 
-    const onSubmit = (data) => {
-        // En este punto, react-hook-form ya convierte los campos a number si usaste valueAsNumber.
-        // Solo para estar seguro con el manejo de archivos:
-        const file = data.imagenServicio[0]; // Tomamos el primer archivo de la lista
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                titulo_card: initialData.titulo_card || '',
+                descripcion_corta: initialData.descripcion_corta || '',
+                precio_servicio: initialData.precio_servicio || '',
+                unidad_precio: initialData.unidad_precio || PRICE_UNITS[0].value,
+                categoria_servicio: initialData.categoria_servicio || CATEGORIES[0].value,
+                url_imagen_principal: initialData.url_imagen_principal || '',
+                estado_publicacion: initialData.estado_publicacion ?? true,
+                newImageFile: null,
+            });
+        }
+    }, [initialData]);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+    
+    const handlePriceChange = (e) => {
+        const value = e.target.value;
+        // Solo permitir números
+        if (/^\d*$/.test(value) || value === '') {
+            setFormData(prev => ({
+                ...prev,
+                precio_servicio: value,
+            }));
+            setPriceError('');
+        } else {
+            setPriceError('Solo se permiten números en el precio.');
+        }
+    };
+
+    const handleFileChange = (e) => {
+        if (e.target.files.length > 0) {
+            setFormData(prev => ({
+                ...prev,
+                newImageFile: e.target.files[0],
+            }));
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
         
-        console.log("Datos de Servicio Válidos (Incluyendo Archivo):", { ...data, imagenFile: file });
-        onServiceSubmit({ ...data, imagenFile: file }); 
+        if (!formData.titulo_card || !formData.precio_servicio || !formData.descripcion_corta) {
+            alert('🚨 Por favor, complete todos los campos obligatorios (Título, Precio y Descripción).');
+            return;
+        }
+
+        if (priceError) {
+             alert('🚨 Corrija el error del precio antes de continuar.');
+            return;
+        }
+        
+        // **Lógica de Preparación de Datos para el Backend:**
+        // En un entorno real, usarías `FormData` para enviar el archivo y los datos.
+        const dataForSubmission = {
+            titulo_card: formData.titulo_card,
+            descripcion_corta: formData.descripcion_corta,
+            precio_servicio: parseInt(formData.precio_servicio, 10), // Aseguramos que sea número
+            unidad_precio: formData.unidad_precio,
+            categoria_servicio: formData.categoria_servicio,
+            estado_publicacion: formData.estado_publicacion,
+            // Aquí se adjuntaría el archivo (formData.newImageFile)
+            // Para la simulación en React, pasamos los datos planos:
+            // Si hay nueva imagen, actualiza la URL con el nombre del archivo, sino, mantiene la vieja URL
+            url_imagen_principal: formData.newImageFile 
+                                  ? `uploads/${formData.newImageFile.name}` 
+                                  : formData.url_imagen_principal,
+        };
+
+        // Llama al handler en ProviderDashboard
+        onServiceSubmit(dataForSubmission);
     };
 
     return (
-        <div className="dashboard-content-box service-form-container">
-            <h3>➕ Registrar Nuevo Servicio</h3>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="form-grid">
-                    
-                    {/* TÍTULO EN LA CARD */}
-                    <div className="full-width">
-                        <label htmlFor="tituloCard">Título que aparece en la tarjeta del servicio</label>
-                        <input type="text" id="tituloCard" placeholder="Ej: Tour Gastronómico por el Centro Histórico" {...register("tituloCard")} />
-                        {errors.tituloCard && <p className="error-message">{errors.tituloCard.message}</p>}
+        <div className="service-form-container">
+            <h3>{isEditing ? '✏️ Editar Servicio' : '➕ Agregar Nuevo Servicio'}</h3>
+            
+            <form onSubmit={handleSubmit} className="service-form">
+                
+                {/* GRUPO 1: TÍTULO Y CATEGORÍA */}
+                <div className="form-group-grid">
+                    <div className="form-field">
+                        <label htmlFor="titulo_card">Título del Servicio (Card):</label>
+                        <input 
+                            type="text" 
+                            id="titulo_card" 
+                            name="titulo_card" 
+                            value={formData.titulo_card} 
+                            onChange={handleChange} 
+                            placeholder="Ej: Tour Histórico de 3 Horas"
+                            maxLength="150"
+                            required
+                        />
                     </div>
-
-                    {/* NOMBRE ADICIONAL DEL SERVICIO */}
-                    <div>
-                        <label htmlFor="nombreServicio">Nombre Adicional / Subtítulo</label>
-                        <input type="text" id="nombreServicio" placeholder="Ej: Vive una experiencia culinaria inolvidable" {...register("nombreServicio")} />
-                        {errors.nombreServicio && <p className="error-message">{errors.nombreServicio.message}</p>}
-                    </div>
                     
-                    {/* CATEGORÍA */}
-                    <div>
-                        <label htmlFor="categoriaServicio">Categoría del Servicio</label>
-                        <select id="categoriaServicio" {...register("categoriaServicio")}>
-                            <option value="">Selecciona la categoría</option>
-                            {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                    <div className="form-field">
+                        <label htmlFor="categoria_servicio">Categoría del Servicio:</label>
+                        <select 
+                            id="categoria_servicio" 
+                            name="categoria_servicio" 
+                            value={formData.categoria_servicio} 
+                            onChange={handleChange}
+                            required
+                        >
+                            {CATEGORIES.map(cat => (
+                                <option key={cat.value} value={cat.value}>{cat.label}</option>
+                            ))}
                         </select>
-                        {errors.categoriaServicio && <p className="error-message">{errors.categoriaServicio.message}</p>}
                     </div>
-
-                    {/* PRECIO */}
-                    <div>
-                        <label htmlFor="precio">Precio del Servicio (COP)</label>
-                        {/* ⚠️ Importante: input type="number" y valueAsNumber: true para el registro */}
-                        <input type="number" id="precio" step="1000" min="1000" placeholder="Ej: 50000" {...register("precio", { valueAsNumber: true })} /> 
-                        {errors.precio && <p className="error-message">{errors.precio.message}</p>}
-                    </div>
-
-                    {/* CANTIDAD DE SERVICIOS */}
-                    <div>
-                        <label htmlFor="cantidadServicios">Cantidad de Servicios/Cupos</label>
-                        {/* ⚠️ Importante: input type="number" y valueAsNumber: true para el registro */}
-                        <input type="number" id="cantidadServicios" min="1" placeholder="Ej: 10 (Cupos disponibles)" {...register("cantidadServicios", { valueAsNumber: true })} />
-                        {errors.cantidadServicios && <p className="error-message">{errors.cantidadServicios.message}</p>}
-                    </div>
-
-                    {/* ESTADO DE PUBLICACIÓN */}
-                    <div>
-                        <label htmlFor="estadoPublicacion">Estado de Publicación</label>
-                        <select id="estadoPublicacion" {...register("estadoPublicacion")}>
-                            <option value="activo">Activo (Visible)</option>
-                            <option value="inactivo">Inactivo (No visible)</option>
-                            <option value="pendiente">Pendiente de Revisión</option>
-                        </select>
-                        {errors.estadoPublicacion && <p className="error-message">{errors.estadoPublicacion.message}</p>}
-                    </div>
-
-                    {/* IMAGEN DEL SERVICIO */}
-                    <div>
-                        <label htmlFor="imagenServicio" className="file-label">Imagen Principal del Servicio</label>
-                        <input type="file" id="imagenServicio" accept="image/*" {...register("imagenServicio")} />
-                        {errors.imagenServicio && <p className="error-message">{errors.imagenServicio.message}</p>}
-                    </div>
-                    
-                    {/* DESCRIPCIÓN */}
-                    <div className="full-width">
-                        <label htmlFor="descripcion">Descripción Detallada del Servicio</label>
-                        <textarea id="descripcion" rows="5" placeholder="Describe qué incluye el servicio, horarios, y puntos destacados..." {...register("descripcion")} />
-                        {errors.descripcion && <p className="error-message">{errors.descripcion.message}</p>}
-                    </div>
-
                 </div>
 
-                <div className="form-actions full-width">
-                    <button type="submit" className="btn-primary-action">GUARDAR Y PUBLICAR SERVICIO</button>
-                    <button type="button" onClick={onCancel} className="btn-secondary-action">Cancelar / Volver</button>
+                {/* GRUPO 2: PRECIO Y UNIDAD */}
+                <div className="form-group-grid">
+                    <div className="form-field">
+                        <label htmlFor="precio_servicio">Precio ($):</label>
+                        <input 
+                            type="text" 
+                            id="precio_servicio" 
+                            name="precio_servicio" 
+                            value={formData.precio_servicio} 
+                            onChange={handlePriceChange} 
+                            placeholder="Ej: 50000"
+                            required
+                        />
+                         {priceError && <p className="error-message">{priceError}</p>}
+                    </div>
+
+                    <div className="form-field">
+                        <label htmlFor="unidad_precio">Unidad de Precio:</label>
+                        <select 
+                            id="unidad_precio" 
+                            name="unidad_precio" 
+                            value={formData.unidad_precio} 
+                            onChange={handleChange}
+                            required
+                        >
+                            {PRICE_UNITS.map(unit => (
+                                <option key={unit.value} value={unit.value}>{unit.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                {/* GRUPO 3: DESCRIPCIÓN CORTA */}
+                <div className="form-field">
+                    <label htmlFor="descripcion_corta">Descripción Corta (Max 500 caracteres):</label>
+                    <textarea 
+                        id="descripcion_corta" 
+                        name="descripcion_corta" 
+                        value={formData.descripcion_corta} 
+                        onChange={handleChange} 
+                        placeholder="Una breve descripción para la tarjeta de presentación del servicio."
+                        maxLength="500"
+                        rows="4"
+                        required
+                    />
+                </div>
+                
+                {/* GRUPO 4: IMAGEN Y ESTADO */}
+                <div className="form-group-grid">
+                    <div className="form-field">
+                        <label htmlFor="newImageFile">Imagen Principal:</label>
+                        <input 
+                            type="file" 
+                            id="newImageFile" 
+                            name="newImageFile" 
+                            accept="image/*"
+                            onChange={handleFileChange} 
+                        />
+                        <p className="status-info">
+                            {formData.newImageFile 
+                                ? `Nueva imagen: ${formData.newImageFile.name}`
+                                : (isEditing && formData.url_imagen_principal 
+                                    ? `Actual: ${formData.url_imagen_principal.split('/').pop()}` 
+                                    : 'Aún no cargada'
+                                  )
+                            }
+                        </p>
+                    </div>
+
+                    <div className="form-field checkbox-field">
+                        <input 
+                            type="checkbox" 
+                            id="estado_publicacion" 
+                            name="estado_publicacion" 
+                            checked={formData.estado_publicacion} 
+                            onChange={handleChange} 
+                        />
+                        <label htmlFor="estado_publicacion" style={{display: 'inline', marginLeft: '10px'}}>
+                            **Publicar Servicio** (Estará visible a los turistas)
+                        </label>
+                    </div>
+                </div>
+
+                {/* ACCIONES */}
+                <div className="form-actions service-actions">
+                    <button type="button" onClick={onCancel} className="btn-cancel">
+                        Cancelar
+                    </button>
+                    <button type="submit" className="btn-save">
+                        {isEditing ? 'Guardar Cambios' : 'Registrar Servicio'}
+                    </button>
                 </div>
             </form>
         </div>

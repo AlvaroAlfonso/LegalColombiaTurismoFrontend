@@ -1,26 +1,46 @@
-// src/pages/CompanyDashboard.jsx (NUEVO ARCHIVO)
+// src/pages/CompanyDashboard.jsx
 
 import React, { useState } from 'react';
-import EmployeeForm from '../components/EmployeeForm'; // Importar el formulario de empleados
-import ServiceForm from '../components/ServiceForm'; // Reutilizamos el formulario de servicio individual
-
+// Asegúrate de que tienes un archivo CSS para los estilos del dashboard (puede ser compartido o uno nuevo)
 import './styles/CompanyDashboard.css'; 
 
+import EmployeeForm from '../components/EmployeeForm'; // Formulario complejo para empleados
+import ServiceForm from '../components/ServiceForm'; // Reutilizamos el formulario de servicio individual
+
 // -----------------------------
-// VISTAS TEMPORALES
+// VISTAS DEL DASHBOARD DE EMPRESA
 // -----------------------------
 
 // 1. Perfil de la Empresa y Representante
 const CompanyProfileView = ({ companyData }) => (
     <div className="dashboard-content-box">
         <h3>🏦 Perfil de la Empresa</h3>
+        <p>Aquí se editan los datos legales de la empresa y del representante.</p>
+        
         {/* Datos de la empresa */}
-        <p><strong>Nombre Legal:</strong> {companyData.razonSocial}</p>
-        <p><strong>NIT:</strong> {companyData.nit}</p>
+        <h4 style={{ marginTop: '20px' }}>Datos Legales</h4>
+        <div className="profile-details-grid">
+            <div>
+                <strong>Razón Social:</strong> {companyData.razonSocial}
+            </div>
+            <div>
+                <strong>NIT:</strong> {companyData.nit}
+            </div>
+            <div>
+                <strong>Ciudad de Operación:</strong> {companyData.ciudad}
+            </div>
+        </div>
+
         {/* Datos del Representante */}
         <h4 style={{ marginTop: '20px' }}>👤 Datos del Representante Legal</h4>
-        <p><strong>Nombre:</strong> {companyData.representanteNombre} {companyData.representanteApellido}</p>
-        <p><strong>Email:</strong> {companyData.email}</p>
+        <div className="profile-details-grid">
+            <div>
+                <strong>Nombre:</strong> {companyData.representanteNombre} {companyData.representanteApellido}
+            </div>
+            <div>
+                <strong>Email:</strong> {companyData.email}
+            </div>
+        </div>
         
         <h4 style={{ marginTop: '20px' }}>📁 Documentación Legal</h4>
         <ul>
@@ -33,19 +53,37 @@ const CompanyProfileView = ({ companyData }) => (
 );
 
 // 2. Gestión de Empleados
-const EmployeesView = ({ setActiveView }) => (
-    <div className="dashboard-content-box">
-        <h3>👥 Gestión de Empleados</h3>
-        <button 
-            className="btn-primary-action"
-            onClick={() => setActiveView('add_employee')} 
-            style={{marginBottom: '20px'}}
-        >
-            ➕ Registrar Nuevo Empleado
-        </button>
-        <p>Aquí se listarán y gestionarán los empleados de la empresa.</p>
-    </div>
-);
+const EmployeesView = ({ setActiveView }) => {
+    // Simulación de lista de empleados
+    const employeesList = [
+        { id: 1, nombre: "Carlos", cargo: "Guía Certificado" },
+        { id: 2, nombre: "Luisa", cargo: "Conductor Turístico" }
+    ];
+
+    return (
+        <div className="dashboard-content-box">
+            <h3>👥 Gestión de Empleados ({employeesList.length})</h3>
+            <button 
+                className="btn-primary-action"
+                onClick={() => setActiveView('add_employee')} 
+                style={{marginBottom: '20px'}}
+            >
+                ➕ Registrar Nuevo Empleado
+            </button>
+            
+            {employeesList.length > 0 ? (
+                <div className="employee-list">
+                    <h4>Lista de Empleados Activos</h4>
+                    {employeesList.map(emp => (
+                        <p key={emp.id}>• {emp.nombre} - {emp.cargo}</p>
+                    ))}
+                </div>
+            ) : (
+                <p>Aún no has registrado empleados.</p>
+            )}
+        </div>
+    );
+};
 
 // 3. Gestión de Servicios de la Empresa
 const CompanyServicesView = ({ setActiveView }) => (
@@ -62,12 +100,26 @@ const CompanyServicesView = ({ setActiveView }) => (
     </div>
 );
 
+// 4. ⭐ NUEVA VISTA: Comentarios y Reseñas
+const CompanyReviewsView = () => (
+    <div className="dashboard-content-box">
+        <h3>⭐ Comentarios y Reseñas</h3>
+        <p>Aquí verás las opiniones y calificaciones que los turistas han dejado sobre tu empresa y sus servicios.</p>
+        <div className="review-summary">
+            <h4>Calificación Promedio: 4.5/5.0</h4>
+            <p>Total de Reseñas: 58</p>
+        </div>
+        <p>**(Listado de reseñas recientes...)**</p>
+    </div>
+);
+
+
 // -----------------------------
 // COMPONENTE PRINCIPAL (CompanyDashboard)
 // -----------------------------
 
 function CompanyDashboard() {
-    // Nuevas vistas: 'employees', 'add_employee', 'add_service'
+    // Añadimos 'reviews' a los posibles estados
     const [activeView, setActiveView] = useState('profile'); 
 
     // Datos de ejemplo para la Empresa Prestadora
@@ -78,10 +130,9 @@ function CompanyDashboard() {
         representanteApellido: "López",
         email: "carolina.lopez@aventura.com",
         ciudad: "Medellín",
-        // ... otros datos
     };
 
-    // Funciones de manejo de formularios
+    // Funciones de manejo de formularios (iguales que antes)
     const handleEmployeeSubmission = (employeeData) => {
         console.log("EMPLEADO REGISTRADO:", employeeData);
         setActiveView('employees');
@@ -104,7 +155,6 @@ function CompanyDashboard() {
                 return <CompanyServicesView setActiveView={setActiveView} />; 
 
             case 'add_service':
-                // Reutilizamos el formulario de servicio (ServiceForm.jsx)
                 return <ServiceForm 
                     onServiceSubmit={handleServiceSubmission} 
                     onCancel={() => setActiveView('services')} 
@@ -114,13 +164,14 @@ function CompanyDashboard() {
                 return <EmployeesView setActiveView={setActiveView} />; 
 
             case 'add_employee':
-                // Usamos el nuevo formulario de empleado
                 return <EmployeeForm 
                     onEmployeeSubmit={handleEmployeeSubmission} 
                     onCancel={() => setActiveView('employees')} 
                 />;
                 
-            // Nota: Podríamos añadir una vista de 'reviews' también
+            case 'reviews':
+                // 🚨 NUEVA VISTA RENDERIZADA 🚨
+                return <CompanyReviewsView />;
             
             default:
                 return <CompanyProfileView companyData={companyExampleData} />;
@@ -154,6 +205,13 @@ function CompanyDashboard() {
                         onClick={() => setActiveView('employees')}
                     >
                         👥 Gestión de Empleados
+                    </button>
+                    {/* 🚨 NUEVO BOTÓN DE NAVEGACIÓN 🚨 */}
+                    <button 
+                        className={`nav-item ${activeView === 'reviews' ? 'active' : ''}`}
+                        onClick={() => setActiveView('reviews')}
+                    >
+                        ⭐ Comentarios y Reseñas
                     </button>
                     <hr/>
                     <button className="nav-item logout">

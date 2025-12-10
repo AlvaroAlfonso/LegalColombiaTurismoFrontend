@@ -1,0 +1,162 @@
+/* src/components/styles/ProfileEditForm.css */
+
+.profile-edit-container {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.profile-edit-container h3 {
+    color: #004d40;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.form-info {
+    background-color: #fff3e0;
+    padding: 10px;
+    border-left: 5px solid #ff9800;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+
+.profile-form {
+    display: grid;
+    gap: 20px;
+}
+
+.form-section {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.form-section legend {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    padding: 0 10px;
+}
+
+/* Campos Editables y No Editables en columnas */
+.editable-fields, .non-editable-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.form-section label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    grid-column: span 1; /* Asegura que la etiqueta tome 1 columna */
+}
+
+.form-section input[type="text"], 
+.form-section input[type="tel"], 
+.form-section input[type="email"], 
+.form-section select, 
+.form-section .password-input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    grid-column: span 1; /* Asegura que el input tome 1 columna */
+}
+
+/* Campos no editables con fondo gris */
+.non-editable-fields input {
+    background-color: #eceff1;
+    cursor: not-allowed;
+    color: #555;
+}
+
+/* Agrupación especial para el input y botón de la contraseña */
+.password-input-group {
+    display: flex;
+    align-items: stretch;
+    grid-column: span 1;
+    margin-top: 5px; 
+}
+
+.password-input-group input {
+    flex-grow: 1;
+    border-right: none;
+    margin-top: 0;
+}
+
+.toggle-password-btn {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-left: none;
+    cursor: pointer;
+    padding: 0 10px;
+    border-radius: 0 4px 4px 0;
+    font-size: 1.2em;
+}
+
+.toggle-password-btn:hover {
+    background-color: #e0e0e0;
+}
+
+
+/* Document Uploader Styles */
+.document-upload-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.document-uploader {
+    padding: 10px;
+    border: 1px dashed #b0bec5;
+    border-radius: 4px;
+}
+
+.document-uploader input[type="file"] {
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #cfd8dc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Botones de acción */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding-top: 20px;
+}
+
+.btn-save, .btn-cancel {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-save {
+    background-color: #004d40; /* Color primario */
+    color: white;
+}
+
+.btn-save:hover {
+    background-color: #00796b;
+}
+
+.btn-cancel {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-cancel:hover {
+    background-color: #e0e0e0;
+}
