@@ -1,0 +1,152 @@
+.detalle-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.detalle-titulo {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+/* ===== GALERÍA ===== */
+
+.galeria {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.galeria-principal {
+  flex: 2;
+  height: 300px;
+  border-radius: 8px;
+  background: #ddd;
+}
+
+.galeria-secundaria {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.placeholder-img {
+  background: #ddd;
+  border-radius: 8px;
+}
+
+.placeholder-img.small {
+  height: 120px;
+}
+
+/* ===== INFO SECCION ===== */
+
+.detalle-info {
+  display: flex;
+  gap: 40px;
+}
+
+.detalle-left {
+  flex: 2;
+}
+
+.detalle-right {
+  flex: 1;
+}
+
+/* ANFITRIÓN */
+.anfitrion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 25px 0;
+}
+
+.avatar-placeholder {
+  width: 60px;
+  height: 60px;
+  background: #ddd;
+  border-radius: 50%;
+}
+
+.detalle-subtitulo {
+  margin: 20px 0 10px;
+}
+
+/* SERVICES GRID */
+.servicios-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.servicio-item {
+  height: 18px;
+  background: #eee;
+  border-radius: 4px;
+}
+
+/* RIGHT PANEL */
+.precio-box {
+  padding: 20px;
+  border: 2px solid #003366;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.fecha-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.picker-box {
+  background: #eee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* BOTONES */
+.btn-reservar {
+  background: #ff6b4a;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.btn-verperfil {
+  background: #014d34;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.btn-calificar {
+  background: #f2c200;
+  padding: 15px;
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.btn-reportar {
+  background: #d93425;
+  color: white;
+  padding: 15px;
+  width: 100%;
+  border-radius: 30px;
+  margin-top: 20px;
+}
+
+.placeholder-text {
+  background: #eee;
+  height: 18px;
+  width: 100%;
+  border-radius: 5px;
+}
