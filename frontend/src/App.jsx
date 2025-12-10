@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
+import {  useEffect } from 'react';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header'; // Importamos el nuevo componente Header
 import MainContent from './components/MainContent';
@@ -7,11 +8,16 @@ import Footer from './components/Footer';
 import ProvisorPage from './pages/ProvisorPage';
 import LoginPage from './pages/loginPage'; 
 import RegisterPage from './pages/RegisterPage';
+
+import ProviderDashboard from './pages/ProviderDashboard';
+import CompanyDashboard from './pages/CompanyDashboard';
+
 import Turist from './pages/HomeTurist';
 import Informacion from './pages/InformacionTurist';
 import ServiciosSeguros from "./pages/ServiciosSeguros";
 import DashboardTurista from "./pages/DashboardTurista";
 import DetalleServicio from "./pages/DetalleServicio";
+
 
 import './App.css'
 
@@ -35,6 +41,11 @@ function App() {
           <Route path="/provisores" element={<ProvisorPage />} />
           <Route path="/iniciar-sesion" element={<LoginPage />} />
           <Route path="/registrarse" element={<RegisterPage />} />
+          <Route path="/dashboard-empresa" element={<CompanyDashboard />} />
+          <Route path="/dashboard-proveedor" element={<ProviderDashboard />}
+          
+         
+          />
           
           <Route path="/Turista" element={<Turist />} />
           <Route path="/informacion" element={<Informacion />} />
