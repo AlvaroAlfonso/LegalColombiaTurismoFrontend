@@ -1,0 +1,259 @@
+/* src/pages/styles/ProviderDashboard.css */
+
+/* Estilos para el contenedor principal y el layout de dos columnas */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f7f9fc;
+}
+
+/* ---------------------------------
+   SIDEBAR (Menú de Navegación)
+--------------------------------- */
+.dashboard-sidebar {
+    width: 250px; /* Ancho fijo para el menú */
+    background-color: #3f51b5; /* Azul primario */
+    color: white;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Evita que se encoja */
+}
+
+.sidebar-header {
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.welcome-message {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.sidebar-nav {
+    padding-top: 10px;
+}
+
+.nav-item {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background-color: #ffffff;
+    color: #3f51b5; /* Color primario para el activo */
+    font-weight: bold;
+    border-left: 5px solid #ff9800; /* Borde de énfasis */
+    padding-left: 15px; /* Ajuste para el borde */
+}
+
+.nav-item.logout {
+    color: #ff9800;
+}
+
+/* ---------------------------------
+   CONTENIDO PRINCIPAL
+--------------------------------- */
+.dashboard-main-content {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.main-title {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.dashboard-content-box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-content-box h3, .dashboard-content-box h4 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* GRID para los detalles del perfil */
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.profile-details-grid strong {
+    display: block;
+    color: #3f51b5;
+    margin-bottom: 5px;
+}
+
+.profile-details-grid .full-row {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+}
+
+.btn-edit-profile, .btn-manage-docs, .btn-primary-action {
+    background-color: #ff9800;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary-action {
+    background-color: #4CAF50; /* Verde para la acción principal */
+}
+
+.btn-edit-profile:hover, .btn-manage-docs:hover {
+    background-color: #f57c00;
+}
+.btn-primary-action:hover {
+    background-color: #388E3C;
+}
+
+
+/* ---------------------------------
+   RESPONSIVE (Para Móviles)
+--------------------------------- */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column; /* Apila el sidebar y el contenido */
+    }
+
+    .dashboard-sidebar {
+        width: 100%; /* El sidebar ocupa todo el ancho */
+        height: auto;
+        padding: 10px 0;
+    }
+    
+    .sidebar-header {
+        text-align: center;
+        padding: 10px 20px;
+        border-bottom: none;
+    }
+    
+    .sidebar-nav {
+        display: flex; /* Muestra los botones de navegación en una fila */
+        overflow-x: auto; /* Permite scroll horizontal */
+        padding: 0 10px;
+    }
+
+    .nav-item {
+        flex-shrink: 0; /* Evita que los botones se achiquen */
+        width: auto;
+        padding: 10px 15px;
+        border-left: none !important;
+        border-radius: 5px;
+        margin-right: 5px;
+        text-align: center;
+    }
+    
+    .nav-item.active {
+        border-bottom: 3px solid #ff9800; /* Usa un borde inferior en vez de lateral */
+        border-left: none; 
+        padding-bottom: 7px;
+    }
+    
+    .nav-item.logout {
+        display: none; /* Ocultar en móvil o mover a un menú */
+    }
+
+    .dashboard-main-content {
+        padding: 20px;
+    }
+}
+
+/* src/pages/styles/ProviderDashboard.css */
+
+/* Añadir estilos para el layout del formulario */
+.service-form-container .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.service-form-container .full-width {
+    grid-column: 1 / -1;
+}
+
+.service-form-container label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.service-form-container input[type="text"],
+.service-form-container input[type="number"],
+.service-form-container select,
+.service-form-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.service-form-container textarea {
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end; /* Alinear botones a la derecha */
+}
+
+.btn-secondary-action {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn-secondary-action:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive para el Formulario */
+@media (max-width: 768px) {
+    .service-form-container .form-grid {
+        grid-template-columns: 1fr; /* Una sola columna en móvil */
+        gap: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
