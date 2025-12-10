@@ -1,20 +1,22 @@
 /* ======================== ESTILOS GLOBALES DENTRO DE MAIN-CONTENT ======================== */
 .main-content {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
     line-height: 1.6;
+    color: #0f172a;
+    background: #f8fafc;
 }
 
 /* ======================== 1. HERO SECTION STYLES ======================== */
 .hero-section {
-
-    background: url('/public/Images/ContenidoColombia.jpg');
+    background: linear-gradient(120deg, rgba(0,51,102,0.8), rgba(0,77,64,0.8)), url('/Images/ContenidoColombia.jpg');
     background-size: cover;
-    height: 500px; /* Altura del banner */
+    background-position: center;
+    min-height: 540px;
     display: flex;
     justify-content: center; 
     align-items: center; 
-    text-align: center;
-    padding: 0 5%;
+    text-align: left;
+    padding: 0 8%;
     position: relative; 
     overflow: hidden;
 }
@@ -25,51 +27,88 @@
     border: solid 5px;
     margin-bottom: 30px;
 }
-.hero-section::before {
-    content: ""; /* Obligatorio para pseudo-elementos */
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    /* Color de la capa: Negro (rgba(0,0,0)) con 50% de opacidad (0.5) */
-    background-color: rgba(0, 0, 0, 0.705); 
-}
 
 .hero-content {
-    max-width: 900px;
-    padding: 20px;
+    max-width: 960px;
+    padding: 32px;
     color: #ffffff; 
-    z-index: 2px;/* Azul oscuro para los textos */
+    z-index: 2;
     position: relative;
 }
 
-.hero-content h1 {
-    font-size: 3.5em; /* Título grande */
-    margin-bottom: 0.5em;
-    color: #ffffff;
-    
+.hero-content .eyebrow {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: #cdeafe;
+    margin-bottom: 10px;
+    display: inline-block;
 }
 
-.hero-content p {
-    font-size: 1.3em;
-    margin-bottom: 1.5em;
+.hero-content h1 {
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    margin-bottom: 0.6em;
+    color: #e2e8f0;
+    line-height: 1.15;
+}
+
+.hero-content .hero-sub {
+    font-size: 1.1rem;
+    margin-bottom: 1.6em;
+    color: #e0f2fe;
+    max-width: 680px;
 }
 
 .cta-button {
-    background-color: #FF6E40; /* Naranja (BTN_INICIO_SESSION) */
+    background: linear-gradient(120deg, #ff7a59, #ff5f6d);
     color: #ffffff;
     border: none;
-    padding: 15px 35px;
-    font-size: 1.2em;
-    font-weight: bold;
-    border-radius: 5px;
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 10px;
     cursor: pointer;
-    transition: opacity 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+    box-shadow: 0 10px 30px rgba(255, 122, 89, 0.25);
 }
 
 .cta-button:hover {
-    opacity: 0.8;
+    opacity: 0.95;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 34px rgba(255, 122, 89, 0.35);
+}
+
+.cta-button.ghost {
+    background: transparent;
+    border: 2px solid #e2e8f0;
+    color: #e2e8f0;
+    box-shadow: none;
+}
+
+.cta-button.ghost:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.hero-cta-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hero-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.hero-badges span {
+    background: rgba(255,255,255,0.12);
+    color: #e0f2fe;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.9rem;
 }
 
 /* ======================== 2. ROLE SELECTOR SECTION STYLES ======================== */
@@ -174,7 +213,7 @@
 
 /* ======================== 3. FEATURES SECTION STYLES ======================== */
 .features-section {
-    padding: 60px 5%;
+    padding: 70px 5%;
     text-align: center;
     background-color: #f7f9fa; /* Fondo claro de contraste */
 }
@@ -199,6 +238,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     max-width: 300px;
     transition: transform 0.3s;
+    border: 1px solid #eef2f7;
 }
 
 .feature-card:hover {
@@ -225,7 +265,7 @@
 .testimonials-section {
     background-color: #003366; /* Fondo azul oscuro, como el Header */
     color: #ffffff;
-    padding: 80px 5%;
+    padding: 90px 5%;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -235,14 +275,20 @@
     margin-bottom: 50px;
 }
 
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
 .testimonial-card {
-    max-width: 800px;
-    margin: 30px auto;
-    background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
-    border-radius: 10px;
-    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.08); /* Fondo semitransparente */
+    border-radius: 12px;
+    padding: 28px;
     font-style: italic;
-    font-size: 1.1em;
+    font-size: 1.05em;
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(4px);
 }
 
 .testimonial-card p {
@@ -255,13 +301,115 @@
     font-style: normal;
 }
 
+.stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 28px 5%;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #0f172a;
+}
+
+.stat-card p {
+    margin: 6px 0 0;
+    color: #475569;
+}
+
+.steps-section {
+    padding: 70px 5%;
+    display: grid;
+    grid-template-columns: 1.1fr 1.2fr;
+    gap: 32px;
+    align-items: center;
+    background: #ffffff;
+}
+
+.steps-left h2 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    margin: 10px 0 16px;
+}
+
+.steps-left .steps-desc {
+    color: #475569;
+    margin-bottom: 18px;
+    max-width: 520px;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.step-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+}
+
+.step-number {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-weight: 800;
+    color: #cbd5e1;
+    font-size: 1.4rem;
+}
+
+.step-card h3 {
+    margin: 0 0 8px;
+    color: #0f172a;
+}
+
+.step-card p {
+    margin: 0;
+    color: #475569;
+}
+
+.eyebrow {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: #0f172a;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
 /* ======================== RESPONSIVIDAD GENERAL DE MAIN-CONTENT ======================== */
 @media (max-width: 768px) {
     .hero-content h1 {
         font-size: 2.5em;
     }
     .hero-section {
-        height: 350px;
+        min-height: 360px;
+    }
+    .hero-content {
+        padding: 18px 0;
+    }
+    .hero-cta-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hero-badges {
+        flex-direction: column;
+        align-items: flex-start;
     }
     .features-section h2, .role-selector-section h2, .testimonials-section h2 {
         font-size: 2em;
@@ -285,5 +433,8 @@
     .tab:first-child, .tab:last-child {
         border-radius: 5px;
         border-left: 2px solid #003366; /* Restaurar borde en móvil */
+    }
+    .steps-section {
+        grid-template-columns: 1fr;
     }
 }

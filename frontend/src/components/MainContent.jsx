@@ -37,13 +37,39 @@ const navigate = useNavigate();
       {/* ======================== 1. HERO SECTION (Banner Principal) ======================== */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Viaja con Confianza: Turismo Certificado, Costos Transparentes</h1>
-          <p>
-            Encuentra y reserva servicios turísticos 100% legales. ¡Dile adiós a las propinas exageradas y a los cobros ocultos!
+          <p className="eyebrow">Legal Turismo Colombia</p>
+          <h1>Viaja con confianza. Contrata sólo servicios certificados.</h1>
+          <p className="hero-sub">
+            Encuentra, verifica y reserva servicios turísticos 100% legales. Tarifas claras, proveedores validados y soporte inmediato.
           </p>
-          <button className="cta-button" onClick={() => navigate('/dashboard-turista')}>
-            Explora Nuestros Servicios
-          </button>
+          <div className="hero-cta-group">
+            <button className="cta-button" onClick={() => navigate('/dashboard-turista')}>
+              Explorar servicios
+            </button>
+            <button className="cta-button ghost" onClick={() => navigate('/registrarse')}>
+              Registrar proveedor
+            </button>
+          </div>
+          <div className="hero-badges">
+            <span>✓ Verificación RNT</span>
+            <span>✓ Precios estandarizados</span>
+            <span>✓ Soporte 24/7</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="stats-strip">
+        <div className="stat-card">
+          <h3>5k+</h3>
+          <p>Turistas protegidos</p>
+        </div>
+        <div className="stat-card">
+          <h3>1.2k</h3>
+          <p>Proveedores validados</p>
+        </div>
+        <div className="stat-card">
+          <h3>98%</h3>
+          <p>Casos resueltos con soporte</p>
         </div>
       </section>
 
@@ -67,6 +93,33 @@ const navigate = useNavigate();
         {/* Contenido de Alternancia: Se muestra según el estado 'activeRole' */}
         <div className="role-content-display">
           {activeRole === 'turista' ? <TuristaContent /> : <ProveedorContent />}
+        </div>
+      </section>
+
+      {/* Nueva sección: Pasos rápidos */}
+      <section className="steps-section">
+        <div className="steps-left">
+          <p className="eyebrow">Cómo funciona</p>
+          <h2>En 3 pasos validas y reservas sin sorpresas</h2>
+          <p className="steps-desc">Centralizamos la validación legal, precios estandarizados y comunicación segura entre turista y proveedor.</p>
+          <button className="cta-button" onClick={() => navigate('/servicios-seguros')}>Ver detalles</button>
+        </div>
+        <div className="steps-grid">
+          <div className="step-card">
+            <span className="step-number">1</span>
+            <h3>Busca y filtra</h3>
+            <p>Selecciona ciudad, categoría y rango de precios. Solo verás proveedores validados.</p>
+          </div>
+          <div className="step-card">
+            <span className="step-number">2</span>
+            <h3>Verifica legalidad</h3>
+            <p>Consulta RNT, certificados y tarifas antes de contratar o reservar.</p>
+          </div>
+          <div className="step-card">
+            <span className="step-number">3</span>
+            <h3>Reserva con soporte</h3>
+            <p>Conecta con el proveedor y recibe soporte 24/7 ante cualquier incidente.</p>
+          </div>
         </div>
       </section>
 
@@ -99,15 +152,17 @@ const navigate = useNavigate();
       {/* ======================== 4. NUEVA SECCIÓN: TESTIMONIOS (Ejemplo de otra sección) ======================== */}
       <section className="testimonials-section">
         <h2>Lo que dicen nuestros usuarios</h2>
-        <div className="testimonial-card">
-          <p>"¡Un servicio invaluable! Mis vacaciones en colombia fueron las mejores. Pude hacer mucho turismo en Colombia"</p>
-          <img  class= "image_user" src="/Images/persona1.jpeg" alt="persona_Maria_Turista" srcset="" />
-          <p className="testimonial-author">- María G., Turista</p>
-        </div>
-        <div className="testimonial-card">
-          <p>"Mi empresa pude certificarla y registrarla en la aplicacion. Muchos clientes me han contactado desde que me registre"</p>
-          <img class= "image_user"src="/Images/persona2.jpeg" alt="persona_Juan_Provisor" srcset="" />
-          <p className="testimonial-author">- Juan R., Proveedor Legal</p>
+        <div className="testimonial-grid">
+          <div className="testimonial-card">
+            <p>"¡Un servicio invaluable! Mis vacaciones en Colombia fueron las mejores. Zero sobrecostos y todo verificado."</p>
+            <img  className="image_user" src="/Images/persona1.jpeg" alt="persona_Maria_Turista" />
+            <p className="testimonial-author">María G. · Turista</p>
+          </div>
+          <div className="testimonial-card">
+            <p>"Certifiqué mi empresa y en semanas empezaron a contactarme. El QR genera mucha confianza."</p>
+            <img className="image_user" src="/Images/persona2.jpeg" alt="persona_Juan_Provisor" />
+            <p className="testimonial-author">Juan R. · Proveedor</p>
+          </div>
         </div>
       </section>
       

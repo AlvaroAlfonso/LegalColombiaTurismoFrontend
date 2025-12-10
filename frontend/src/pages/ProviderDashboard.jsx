@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import './styles/ProviderDashboard.css';
 
 // 🚨 IMPORTAR COMPONENTES NECESARIOS 🚨
-import ServiceForm from '../components/ServiceForm'; 
-import ProfileEditForm from '../components/ProfileEditForm'; 
+import ServiceForm from '../components/ServiceForm';
+import ProfileEditForm from '../components/ProfileEditForm';
 import { authApi, servicesApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
@@ -24,13 +24,13 @@ const StarRating = ({ score }) => {
 // -----------------------------
 // Nota: Usamos campos simulados para el Dashboard basados en la tabla card_servicio_venta
 const ServiceItem = ({ service, onEdit, onDelete }) => (
-    <div className="service-item" style={{ 
-        border: '1px solid #e0e0e0', 
-        padding: '15px', 
-        marginBottom: '10px', 
-        borderRadius: '5px', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+    <div className="service-item" style={{
+        border: '1px solid #e0e0e0',
+        padding: '15px',
+        marginBottom: '10px',
+        borderRadius: '5px',
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff'
     }}>
@@ -45,14 +45,14 @@ const ServiceItem = ({ service, onEdit, onDelete }) => (
             <p style={{ fontSize: '0.9em', color: '#666' }}>ID: {service.id_registro_oferta}</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-            <button 
+            <button
                 className="btn-edit-service"
-                onClick={() => onEdit(service)} 
+                onClick={() => onEdit(service)}
                 style={{ padding: '8px 15px', backgroundColor: '#3f51b5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
             >
                 ✏️ Editar
             </button>
-            <button 
+            <button
                 className="btn-delete-service"
                 onClick={() => onDelete(service)}
                 style={{ padding: '8px 15px', backgroundColor: '#d32f2f', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
@@ -85,7 +85,7 @@ const DocumentStatus = ({ label, status }) => {
     const isLoaded = !!status;
     const color = isLoaded ? '#004d40' : '#d32f2f'; // Verde oscuro para cargado, Rojo para pendiente
     const statusText = isLoaded ? 'Cargado' : 'Pendiente';
-    
+
     return (
         <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
             <span style={{ width: '250px', fontWeight: 'bold', marginRight: '10px' }}>{label}:</span>
@@ -102,18 +102,18 @@ const DocumentStatus = ({ label, status }) => {
 // -----------------------------
 const ProfileView = ({ providerData, onEditClick }) => (
     <div className="dashboard-content-box">
-        
+
         {/* === SECCIÓN DE DATOS PERSONALES (Formato Grid Mejorado) === */}
         <h3 style={{ borderBottom: '2px solid #004d40', paddingBottom: '10px' }}>
             👤 Mis Datos Personales
         </h3>
-        
-        <div 
-            style={{ 
-                marginBottom: '30px', 
-                padding: '20px', 
-                border: '1px solid #e0e0e0', 
-                borderRadius: '8px', 
+
+        <div
+            style={{
+                marginBottom: '30px',
+                padding: '20px',
+                border: '1px solid #e0e0e0',
+                borderRadius: '8px',
                 backgroundColor: '#f5f5f5',
                 // Estilo de cuadrícula (Grid) para mejor alineación
                 display: 'grid',
@@ -136,7 +136,7 @@ const ProfileView = ({ providerData, onEditClick }) => (
             <ProfileField label="Teléfono">
                 {providerData.numeroTelefonico}
             </ProfileField>
-            
+
             {/* Fila 3 */}
             <ProfileField label="Municipio de Trabajo">
                 {providerData.municipioTrabajo}
@@ -161,9 +161,9 @@ const ProfileView = ({ providerData, onEditClick }) => (
             <DocumentStatus label="Matrícula Comerciante (fotoMatriculaComerciante)" status={providerData.fotoMatriculaComerciante} />
             <DocumentStatus label="Permiso de Alcaldía (fotoPermisoAlcaldia)" status={providerData.fotoPermisoAlcaldia} />
         </ul>
-        <button 
-            className="btn-manage-docs" 
-            onClick={onEditClick} 
+        <button
+            className="btn-manage-docs"
+            onClick={onEditClick}
             style={{ marginTop: '20px', backgroundColor: '#3f51b5', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}
         >
             ✏️ Gestionar Documentos y Datos
@@ -179,11 +179,11 @@ const ServicesView = ({ setActiveView, servicesList, onEditService, onDeleteServ
     return (
         <div className="dashboard-content-box">
             <h3>🗺️ Mis Servicios ({servicesList.length})</h3>
-            
-            <button 
+
+            <button
                 className="btn-primary-action"
-                onClick={() => setActiveView('add_service')} 
-                style={{marginBottom: '20px', backgroundColor: '#4caf50', color: 'white'}}
+                onClick={() => setActiveView('add_service')}
+                style={{ marginBottom: '20px', backgroundColor: '#4caf50', color: 'white' }}
             >
                 ➕ Agregar Nuevo Servicio
             </button>
@@ -193,10 +193,10 @@ const ServicesView = ({ setActiveView, servicesList, onEditService, onDeleteServ
             ) : (
                 <div className="services-list-container">
                     {servicesList.map(service => (
-                        <ServiceItem 
-                            key={service.id || service.id_registro_oferta} 
-                            service={service} 
-                            onEdit={onEditService} 
+                        <ServiceItem
+                            key={service.id || service.id_registro_oferta}
+                            service={service}
+                            onEdit={onEditService}
                             onDelete={onDeleteService}
                         />
                     ))}
@@ -212,7 +212,7 @@ const ServicesView = ({ setActiveView, servicesList, onEditService, onDeleteServ
 // -----------------------------
 const ReviewItem = ({ review }) => {
     const touristName = `Turista #${review.id_turistas_fk}`;
-    
+
     return (
         <div className="review-card" style={{
             border: '1px solid #e0e0e0',
@@ -222,7 +222,7 @@ const ReviewItem = ({ review }) => {
             backgroundColor: '#ffffff',
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
         }}>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0', paddingBottom: '10px', marginBottom: '15px' }}>
                 <h4 style={{ margin: 0, color: '#004d40' }}>
                     <span style={{ marginRight: '10px' }}>👤</span> {touristName}
@@ -238,7 +238,7 @@ const ReviewItem = ({ review }) => {
                     Puntuación General: <StarRating score={review.puntuacion_general} />
                 </p>
             </div>
-            
+
             {/* FEEDBACK */}
             <div style={{ backgroundColor: '#e8f5e9', padding: '15px', borderRadius: '6px', marginBottom: '15px' }}>
                 <p style={{ margin: 0, fontStyle: 'italic', color: '#333' }}>
@@ -248,7 +248,7 @@ const ReviewItem = ({ review }) => {
 
             {/* PUNTUACIONES DETALLADAS */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.95em' }}>
-                
+
                 <p style={{ margin: 0 }}>
                     **📜 Certificados:** <StarRating score={review.puntuacion_certificados} />
                 </p>
@@ -271,45 +271,45 @@ const ReviewItem = ({ review }) => {
 const ReviewsView = () => {
     // 🚨 Datos de comentarios simulados, con la estructura de la tabla 'calificacion_servicio_usuario' 🚨
     const simulatedReviews = [
-        { 
-            id_calificacion: 1, 
-            puntuacion_general: 5, 
-            feedback_empresa: "El tour fue impecable. Muy puntual y todo limpio. ¡Recomendado!", 
-            puntuacion_certificados: 5, 
-            calificacion_puntualidad: 5, 
-            calificacion_limpieza: 5, 
-            fecha_calificacion: "2025-12-05", 
-            id_card_servicio_fk: 1, 
-            id_turistas_fk: 101 
+        {
+            id_calificacion: 1,
+            puntuacion_general: 5,
+            feedback_empresa: "El tour fue impecable. Muy puntual y todo limpio. ¡Recomendado!",
+            puntuacion_certificados: 5,
+            calificacion_puntualidad: 5,
+            calificacion_limpieza: 5,
+            fecha_calificacion: "2025-12-05",
+            id_card_servicio_fk: 1,
+            id_turistas_fk: 101
         },
-        { 
-            id_calificacion: 2, 
-            puntuacion_general: 4, 
-            feedback_empresa: "Buena atención, pero el inicio de la actividad se retrasó 15 minutos.", 
-            puntuacion_certificados: 5, 
-            calificacion_puntualidad: 3, 
-            calificacion_limpieza: 4, 
-            fecha_calificacion: "2025-11-20", 
-            id_card_servicio_fk: 2, 
-            id_turistas_fk: 102 
+        {
+            id_calificacion: 2,
+            puntuacion_general: 4,
+            feedback_empresa: "Buena atención, pero el inicio de la actividad se retrasó 15 minutos.",
+            puntuacion_certificados: 5,
+            calificacion_puntualidad: 3,
+            calificacion_limpieza: 4,
+            fecha_calificacion: "2025-11-20",
+            id_card_servicio_fk: 2,
+            id_turistas_fk: 102
         },
     ];
-    
+
     // Cálculo de promedio
     const totalScore = simulatedReviews.reduce((sum, review) => sum + review.puntuacion_general, 0);
     const averageScore = simulatedReviews.length > 0 ? (totalScore / simulatedReviews.length).toFixed(1) : 0;
-    
+
     return (
         <div className="dashboard-content-box">
             <h3 style={{ borderBottom: '2px solid #004d40', paddingBottom: '10px' }}>
                 ⭐ Comentarios y Reseñas ({simulatedReviews.length})
             </h3>
-            
+
             {simulatedReviews.length > 0 && (
-                <div style={{ 
-                    marginBottom: '20px', 
-                    padding: '15px', 
-                    backgroundColor: '#e3f2fd', 
+                <div style={{
+                    marginBottom: '20px',
+                    padding: '15px',
+                    backgroundColor: '#e3f2fd',
                     borderRadius: '8px'
                 }}>
                     <h4 style={{ margin: 0, color: '#1565c0' }}>
@@ -320,7 +320,7 @@ const ReviewsView = () => {
                     </p>
                 </div>
             )}
-            
+
             {simulatedReviews.length === 0 ? (
                 <p style={{ padding: '20px', textAlign: 'center', border: '1px dashed #ccc' }}>
                     **(No hay comentarios aún. ¡Sigue prestando servicios de alta calidad!)**
@@ -341,13 +341,13 @@ const ReviewsView = () => {
 // -----------------------------
 
 function ProviderDashboard() {
-    const [activeView, setActiveView] = useState('profile'); 
+    const [activeView, setActiveView] = useState('profile');
     const { user } = useAuth();
     const [providerData, setProviderData] = useState(null);
     const [servicesList, setServicesList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     const [serviceToEdit, setServiceToEdit] = useState(null);
 
 
@@ -356,16 +356,48 @@ function ProviderDashboard() {
         const loadData = async () => {
             try {
                 setLoading(true);
-                const [profileRes, servicesRes] = await Promise.all([
-                    authApi.getProfile(),
-                    servicesApi.fetchServices({ mine: true }),
-                ]);
+
+                // --- 1. CARGA DE PERFIL (Con Fallback) ---
+                let profileData = null;
+                try {
+                    const profileRes = await authApi.getProfile();
+                    profileData = profileRes.data;
+                } catch (err) {
+                    console.warn("Error cargando perfil, usando datos simulados:", err);
+                    // Fallback visual para no bloquear
+                    profileData = {
+                        nombre: user?.nombre || "Usuario",
+                        apellido: user?.apellido || "Demo",
+                        email: user?.email || "usuario@demo.com",
+                        tipoIdentificacion: "CC",
+                        numIdentificacion: "00000000",
+                        numeroTelefonico: "3000000000",
+                        municipioTrabajo: "Desconocido",
+                        afiliadoSeguridadSocial: "no",
+                        fotoDocumento: null,
+                        fotoRut: null,
+                        fotoMatriculaComerciante: null,
+                        fotoPermisoAlcaldia: null
+                    };
+                    // No seteamos 'error' global para permitir ver el dashboard parcialmente
+                }
                 if (!active) return;
-                setProviderData(profileRes.data);
-                setServicesList(servicesRes.data?.results || servicesRes.data || []);
-            } catch (err) {
+                setProviderData(profileData);
+
+                // --- 2. CARGA DE SERVICIOS (Con Fallback) ---
+                try {
+                    const servicesRes = await servicesApi.fetchServices({ mine: true });
+                    setServicesList(servicesRes.data?.results || servicesRes.data || []);
+                } catch (err) {
+                    console.warn("Error cargando servicios, la lista estará vacía:", err);
+                    setServicesList([]);
+                }
+
+            } catch (globalErr) {
+                // Este catch captura errores inesperados fuera de las llamadas API
                 if (!active) return;
-                setError('No pudimos cargar tu información de prestador.');
+                console.error("Error crítico en dashboard:", globalErr);
+                setError('Hubo un problema cargando el panel. Intenta recargar.');
             } finally {
                 if (active) setLoading(false);
             }
@@ -392,7 +424,7 @@ function ProviderDashboard() {
     };
 
     const handleCancelForm = () => {
-        setServiceToEdit(null); 
+        setServiceToEdit(null);
         setActiveView(activeView.includes('profile') || activeView.includes('edit_profile') ? 'profile' : 'services');
     }
 
@@ -417,7 +449,7 @@ function ProviderDashboard() {
                 const { data } = await servicesApi.createService(formData);
                 setServicesList((prev) => [data, ...prev]);
             }
-            setActiveView('services'); 
+            setActiveView('services');
         } catch (err) {
             setError('No pudimos guardar el servicio. Revisa los datos.');
         } finally {
@@ -427,7 +459,7 @@ function ProviderDashboard() {
 
     const handleEditService = (service) => {
         setServiceToEdit(service);
-        setActiveView('edit_service'); 
+        setActiveView('edit_service');
     };
 
     const handleDeleteService = async (service) => {
@@ -442,52 +474,52 @@ function ProviderDashboard() {
             setLoading(false);
         }
     };
-    
+
 
     // 4. Función para renderizar el contenido de la vista activa
     const renderContent = () => {
         switch (activeView) {
             case 'profile':
-                return <ProfileView 
-                    providerData={providerData} 
-                    onEditClick={() => setActiveView('edit_profile')} 
+                return <ProfileView
+                    providerData={providerData}
+                    onEditClick={() => setActiveView('edit_profile')}
                 />;
-            
+
             case 'edit_profile':
                 // FORMULARIO DE EDICIÓN DE PERFIL/DOCUMENTOS
-                return <ProfileEditForm 
-                    providerData={providerData} 
+                return <ProfileEditForm
+                    providerData={providerData}
                     onSave={handleProfileSave}
                     onCancel={handleCancelForm}
                 />;
-                
+
             case 'services':
                 // VISTA: Administrar Servicios (con lista, editar, eliminar)
-                return <ServicesView 
-                    setActiveView={setActiveView} 
+                return <ServicesView
+                    setActiveView={setActiveView}
                     servicesList={servicesList}
                     onEditService={handleEditService}
                     onDeleteService={handleDeleteService}
-                />; 
+                />;
 
             case 'add_service':
             case 'edit_service':
                 // VISTA: Formulario de Servicio (usa ServiceForm)
-                return <ServiceForm 
-                    initialData={serviceToEdit} 
-                    isEditing={!!serviceToEdit} 
-                    onServiceSubmit={handleServiceSubmission} 
-                    onCancel={handleCancelForm} 
+                return <ServiceForm
+                    initialData={serviceToEdit}
+                    isEditing={!!serviceToEdit}
+                    onServiceSubmit={handleServiceSubmission}
+                    onCancel={handleCancelForm}
                 />;
-                
+
             case 'reviews':
                 // VISTA: Comentarios y Reseñas
                 return <ReviewsView />;
-                
+
             default:
-                return <ProfileView 
-                    providerData={providerData} 
-                    onEditClick={() => setActiveView('edit_profile')} 
+                return <ProfileView
+                    providerData={providerData}
+                    onEditClick={() => setActiveView('edit_profile')}
                 />;
         }
     };
@@ -502,7 +534,7 @@ function ProviderDashboard() {
 
     return (
         <div className="dashboard-container">
-            
+
             {/* -------------------- SIDEBAR (Menú de navegación) -------------------- */}
             <aside className="dashboard-sidebar">
                 <div className="sidebar-header">
@@ -510,25 +542,25 @@ function ProviderDashboard() {
                     <p className="welcome-message">Bienvenido, {providerData.nombre}</p>
                 </div>
                 <nav className="sidebar-nav">
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'profile' || activeView === 'edit_profile' ? 'active' : ''}`}
                         onClick={() => setActiveView('profile')}
                     >
                         👤 Mi Perfil
                     </button>
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'services' || activeView === 'add_service' || activeView === 'edit_service' ? 'active' : ''}`}
                         onClick={() => setActiveView('services')}
                     >
                         🗺️ Administrar Servicios
                     </button>
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'reviews' ? 'active' : ''}`}
                         onClick={() => setActiveView('reviews')}
                     >
                         ⭐ Comentarios y Reseñas
                     </button>
-                    <hr/>
+                    <hr />
                     <button className="nav-item logout">
                         Salir
                     </button>

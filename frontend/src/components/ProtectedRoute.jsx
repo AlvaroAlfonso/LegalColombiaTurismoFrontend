@@ -4,7 +4,12 @@ import { useAuth } from '../context/AuthContext';
 
 const hasAllowedRole = (userRole, allowedRoles = []) => {
   if (!allowedRoles || allowedRoles.length === 0) return true;
-  return allowedRoles.includes(userRole);
+  if (!userRole) return false;
+
+  const normalizedUserRole = userRole.toLowerCase();
+  const normalizedAllowedRoles = allowedRoles.map(r => r.toLowerCase());
+
+  return normalizedAllowedRoles.includes(normalizedUserRole);
 };
 
 export default function ProtectedRoute({ children, allowedRoles = [] }) {
@@ -15,6 +20,7 @@ export default function ProtectedRoute({ children, allowedRoles = [] }) {
   }
 
   if (!hasAllowedRole(role, allowedRoles)) {
+    // Si tienes roles pero no el correcto, te mandamos al home o a una página de "No autorizado"
     return <Navigate to="/" replace />;
   }
 

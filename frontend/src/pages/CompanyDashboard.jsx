@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 // Asegúrate de que tienes un archivo CSS para los estilos del dashboard (puede ser compartido o uno nuevo)
-import './styles/CompanyDashboard.css'; 
+import './styles/CompanyDashboard.css';
 
-import EmployeeForm from '../components/EmployeeForm'; // Formulario complejo para empleados
-import ServiceForm from '../components/ServiceForm'; // Reutilizamos el formulario de servicio individual
-import { authApi, servicesApi } from '../api';
+import EmployeeForm from '../components/EmployeeForm';
+import ServiceForm from '../components/ServiceForm';
+import ServiceCard from '../components/ServiceCard';
+import EmployeeCard from '../components/EmployeeCard';
+import ReviewCard from '../components/ReviewCard';
+import { authApi, servicesApi, employeesApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 // -----------------------------
@@ -18,7 +21,7 @@ const CompanyProfileView = ({ companyData }) => (
     <div className="dashboard-content-box">
         <h3>🏦 Perfil de la Empresa</h3>
         <p>Aquí se editan los datos legales de la empresa y del representante.</p>
-        
+
         {/* Datos de la empresa */}
         <h4 style={{ marginTop: '20px' }}>Datos Legales</h4>
         <div className="profile-details-grid">
@@ -43,7 +46,7 @@ const CompanyProfileView = ({ companyData }) => (
                 <strong>Email:</strong> {companyData.email}
             </div>
         </div>
-        
+
         <h4 style={{ marginTop: '20px' }}>📁 Documentación Legal</h4>
         <ul>
             <li>Cámara de Comercio (Certificado)</li>
@@ -55,73 +58,78 @@ const CompanyProfileView = ({ companyData }) => (
 );
 
 // 2. Gestión de Empleados
-const EmployeesView = ({ setActiveView }) => {
-    // Simulación de lista de empleados
-    const employeesList = [
-        { id: 1, nombre: "Carlos", cargo: "Guía Certificado" },
-        { id: 2, nombre: "Luisa", cargo: "Conductor Turístico" }
-    ];
-
+const EmployeesView = ({ setActiveView, employeesList, onEditEmployee, onDeleteEmployee }) => {
     return (
         <div className="dashboard-content-box">
             <h3>👥 Gestión de Empleados ({employeesList.length})</h3>
-            <button 
+            <button
                 className="btn-primary-action"
-                onClick={() => setActiveView('add_employee')} 
-                style={{marginBottom: '20px'}}
+                onClick={() => setActiveView('add_employee')}
+                style={{ marginBottom: '20px' }}
             >
                 ➕ Registrar Nuevo Empleado
             </button>
-            
-            {employeesList.length > 0 ? (
-                <div className="employee-list">
-                    <h4>Lista de Empleados Activos</h4>
+
+            {employeesList.length === 0 ? (
+                <p>Aún no has registrado empleados.</p>
+            ) : (
+                <div className="cards-grid">
                     {employeesList.map(emp => (
-                        <p key={emp.id}>• {emp.nombre} - {emp.cargo}</p>
+                        <EmployeeCard
+                            key={emp.id}
+                            employee={emp}
+                            onEdit={onEditEmployee}
+                            onDelete={onDeleteEmployee}
+                        />
                     ))}
                 </div>
-            ) : (
-                <p>Aún no has registrado empleados.</p>
             )}
         </div>
     );
 };
 
 // 3. Gestión de Servicios de la Empresa
-const CompanyServicesView = ({ setActiveView, servicesList }) => (
+const CompanyServicesView = ({ setActiveView, servicesList, onEditService, onDeleteService }) => (
     <div className="dashboard-content-box">
         <h3>🗺️ Servicios de la Empresa</h3>
-        <button 
+        <button
             className="btn-primary-action"
-            onClick={() => setActiveView('add_service')} 
-            style={{marginBottom: '20px'}}
+            onClick={() => setActiveView('add_service')}
+            style={{ marginBottom: '20px' }}
         >
             ➕ Registrar Nuevo Servicio de la Empresa
         </button>
         {servicesList.length === 0 ? (
             <p>Aún no has registrado servicios.</p>
         ) : (
-            <ul>
+            <div className="cards-grid">
                 {servicesList.map((svc) => (
-                    <li key={svc.id || svc.id_registro_oferta}>
-                        {svc.titulo_card || svc.nombre} — {svc.ciudad || 'Sin ciudad'}
-                    </li>
+                    <ServiceCard
+                        key={svc.id || svc.id_registro_oferta}
+                        service={svc}
+                        onEdit={onEditService}
+                        onDelete={onDeleteService}
+                    />
                 ))}
-            </ul>
+            </div>
         )}
     </div>
 );
 
 // 4. ⭐ NUEVA VISTA: Comentarios y Reseñas
-const CompanyReviewsView = () => (
+const CompanyReviewsView = ({ reviewsList }) => (
     <div className="dashboard-content-box">
         <h3>⭐ Comentarios y Reseñas</h3>
         <p>Aquí verás las opiniones y calificaciones que los turistas han dejado sobre tu empresa y sus servicios.</p>
-        <div className="review-summary">
-            <h4>Calificación Promedio: 4.5/5.0</h4>
-            <p>Total de Reseñas: 58</p>
-        </div>
-        <p>**(Listado de reseñas recientes...)**</p>
+        {reviewsList.length === 0 ? (
+            <p>Aún no tienes reseñas.</p>
+        ) : (
+            <div className="cards-grid">
+                {reviewsList.map((review, idx) => (
+                    <ReviewCard key={review.id || idx} review={review} />
+                ))}
+            </div>
+        )}
     </div>
 );
 
@@ -131,10 +139,14 @@ const CompanyReviewsView = () => (
 // -----------------------------
 
 function CompanyDashboard() {
-    const [activeView, setActiveView] = useState('profile'); 
+    const [activeView, setActiveView] = useState('profile');
     const { user } = useAuth();
     const [companyData, setCompanyData] = useState(null);
     const [servicesList, setServicesList] = useState([]);
+    const [employeesList, setEmployeesList] = useState([]);
+    const [reviewsList, setReviewsList] = useState([]);
+    const [editingService, setEditingService] = useState(null);
+    const [editingEmployee, setEditingEmployee] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -143,16 +155,62 @@ function CompanyDashboard() {
         const load = async () => {
             try {
                 setLoading(true);
-                const [profileRes, servicesRes] = await Promise.all([
-                    authApi.getProfile(),
-                    servicesApi.fetchServices({ mine: true }),
-                ]);
+
+                // --- 1. CARGA DE PERFIL (Con Fallback) ---
+                let profileData = null;
+                try {
+                    const profileRes = await authApi.getProfile();
+                    // FIX: Map nested API response to flat structure expected by UI
+                    // API returns: { ..., empresa: { ... }, ... }
+                    const apiData = profileRes.data || {};
+                    const empresaData = apiData.empresa || {};
+
+                    profileData = {
+                        razonSocial: empresaData.nombre_razon_social || apiData.nombre || "Empresa Sin Nombre",
+                        nit: empresaData.nit_empresa || "No registrado",
+                        ciudad: empresaData.direccion || "Sin dirección registrada", // Using address as city isn't separate yet
+                        representanteNombre: apiData.nombre || user?.nombre,
+                        representanteApellido: apiData.apellido || user?.apellido,
+                        email: apiData.email || user?.email
+                    };
+                } catch (err) {
+                    console.warn("Error cargando perfil de empresa, usando datos simulados:", err);
+                    profileData = {
+                        razonSocial: "Empresa Demo SAS",
+                        nit: "900.000.000-1",
+                        ciudad: "Bogotá D.C.",
+                        representanteNombre: user?.nombre || "Pepito",
+                        representanteApellido: user?.apellido || "Pérez",
+                        email: user?.email || "contacto@empresa.com"
+                    };
+                }
                 if (!active) return;
-                setCompanyData(profileRes.data);
-                setServicesList(servicesRes.data?.results || servicesRes.data || []);
-            } catch (err) {
+                setCompanyData(profileData);
+
+                // --- 2. CARGA DE SERVICIOS (Con Fallback) ---
+                try {
+                    const servicesRes = await servicesApi.fetchServices({ mine: true });
+                    console.log("DEBUG: Services Response:", servicesRes.data);
+                    setServicesList(servicesRes.data?.results || servicesRes.data || []);
+                } catch (err) {
+                    console.warn("Error cargando servicios de empresa, lista vacía:", err);
+                    setServicesList([]);
+                }
+
+                // --- 3. CARGA DE EMPLEADOS ---
+                try {
+                    const employeesRes = await employeesApi.fetchEmployees({ mine: true });
+                    console.log("DEBUG: Employees Response:", employeesRes.data);
+                    setEmployeesList(employeesRes.data?.results || employeesRes.data || []);
+                } catch (err) {
+                    console.warn("Error cargando empleados, lista vacía:", err);
+                    setEmployeesList([]);
+                }
+
+            } catch (globalErr) {
                 if (!active) return;
-                setError('No pudimos cargar la información de la empresa.');
+                console.error("Error crítico en company dashboard:", globalErr);
+                setError('Hubo un problema cargando el panel. Intenta recargar.');
             } finally {
                 if (active) setLoading(false);
             }
@@ -161,11 +219,27 @@ function CompanyDashboard() {
         return () => { active = false; };
     }, []);
 
-    // Funciones de manejo de formularios (iguales que antes)
-    const handleEmployeeSubmission = (employeeData) => {
-        console.log("EMPLEADO REGISTRADO:", employeeData);
-        setActiveView('employees');
-        alert("Empleado registrado con éxito. Revisar documentación.");
+    // Funciones de manejo de formularios y acciones
+    const handleEmployeeSubmission = async (employeeData) => {
+        try {
+            setLoading(true);
+            if (editingEmployee) {
+                // Update existing employee
+                const { data } = await employeesApi.updateEmployee(editingEmployee.id, employeeData);
+                setEmployeesList((prev) => prev.map(e => e.id === data.id ? data : e));
+                setEditingEmployee(null);
+            } else {
+                // Create new employee
+                const { data } = await employeesApi.createEmployee(employeeData);
+                setEmployeesList((prev) => [data, ...prev]);
+            }
+            setActiveView('employees');
+        } catch (err) {
+            console.error('Error guardando empleado:', err);
+            alert(editingEmployee ? 'No pudimos actualizar el empleado.' : 'No pudimos registrar el empleado.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleServiceSubmission = async (serviceData) => {
@@ -175,14 +249,54 @@ function CompanyDashboard() {
         });
         try {
             setLoading(true);
-            const { data } = await servicesApi.createService(formData);
-            setServicesList((prev) => [data, ...prev]);
+            if (editingService) {
+                // Update existing service
+                const { data } = await servicesApi.updateService(editingService.id, formData);
+                setServicesList((prev) => prev.map(s => s.id === data.id ? data : s));
+                setEditingService(null);
+            } else {
+                // Create new service
+                const { data } = await servicesApi.createService(formData);
+                setServicesList((prev) => [data, ...prev]);
+            }
             setActiveView('services');
         } catch (err) {
-            setError('No pudimos registrar el servicio.');
+            setError(editingService ? 'No pudimos actualizar el servicio.' : 'No pudimos registrar el servicio.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleDeleteService = async (serviceId) => {
+        if (!window.confirm('¿Estás seguro de que deseas eliminar este servicio?')) return;
+        try {
+            await servicesApi.deleteService(serviceId);
+            setServicesList(prev => prev.filter(s => s.id !== serviceId));
+        } catch (err) {
+            console.error('Error eliminando servicio:', err);
+            alert('No se pudo eliminar el servicio.');
+        }
+    };
+
+    const handleEditService = (service) => {
+        setEditingService(service);
+        setActiveView('edit_service');
+    };
+
+    const handleDeleteEmployee = async (employeeId) => {
+        if (!window.confirm('¿Estás seguro de que deseas eliminar este empleado?')) return;
+        try {
+            await employeesApi.deleteEmployee(employeeId);
+            setEmployeesList(prev => prev.filter(e => e.id !== employeeId));
+        } catch (err) {
+            console.error('Error eliminando empleado:', err);
+            alert('No se pudo eliminar el empleado.');
+        }
+    };
+
+    const handleEditEmployee = (employee) => {
+        setEditingEmployee(employee);
+        setActiveView('edit_employee');
     };
 
 
@@ -190,29 +304,60 @@ function CompanyDashboard() {
         switch (activeView) {
             case 'profile':
                 return <CompanyProfileView companyData={companyData || {}} />;
-                
+
             case 'services':
-                return <CompanyServicesView setActiveView={setActiveView} servicesList={servicesList} />; 
+                return <CompanyServicesView
+                    setActiveView={setActiveView}
+                    servicesList={servicesList}
+                    onEditService={handleEditService}
+                    onDeleteService={handleDeleteService}
+                />;
 
             case 'add_service':
-                return <ServiceForm 
-                    onServiceSubmit={handleServiceSubmission} 
-                    onCancel={() => setActiveView('services')} 
+                return <ServiceForm
+                    onServiceSubmit={handleServiceSubmission}
+                    onCancel={() => setActiveView('services')}
+                />;
+
+            case 'edit_service':
+                return <ServiceForm
+                    initialData={editingService}
+                    isEditing={true}
+                    onServiceSubmit={handleServiceSubmission}
+                    onCancel={() => {
+                        setEditingService(null);
+                        setActiveView('services');
+                    }}
                 />;
 
             case 'employees':
-                return <EmployeesView setActiveView={setActiveView} />; 
+                return <EmployeesView
+                    setActiveView={setActiveView}
+                    employeesList={employeesList}
+                    onEditEmployee={handleEditEmployee}
+                    onDeleteEmployee={handleDeleteEmployee}
+                />;
 
             case 'add_employee':
-                return <EmployeeForm 
-                    onEmployeeSubmit={handleEmployeeSubmission} 
-                    onCancel={() => setActiveView('employees')} 
+                return <EmployeeForm
+                    onEmployeeSubmit={handleEmployeeSubmission}
+                    onCancel={() => setActiveView('employees')}
                 />;
-                
+
+            case 'edit_employee':
+                return <EmployeeForm
+                    initialData={editingEmployee}
+                    isEditing={true}
+                    onEmployeeSubmit={handleEmployeeSubmission}
+                    onCancel={() => {
+                        setEditingEmployee(null);
+                        setActiveView('employees');
+                    }}
+                />;
+
             case 'reviews':
-                // 🚨 NUEVA VISTA RENDERIZADA 🚨
-                return <CompanyReviewsView />;
-            
+                return <CompanyReviewsView reviewsList={reviewsList} />;
+
             default:
                 return <CompanyProfileView companyData={companyData || {}} />;
         }
@@ -228,40 +373,40 @@ function CompanyDashboard() {
 
     return (
         <div className="dashboard-container">
-            
+
             {/* -------------------- SIDEBAR (Menú de navegación) -------------------- */}
             <aside className="dashboard-sidebar">
                 <div className="sidebar-header">
                     <h2>Panel de Empresa</h2>
-                    <p className="welcome-message">Bienvenida, {companyExampleData.representanteNombre}</p>
+                    <p className="welcome-message">Bienvenido/a, {companyData?.representanteNombre || 'Usuario'}</p>
                 </div>
                 <nav className="sidebar-nav">
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'profile' ? 'active' : ''}`}
                         onClick={() => setActiveView('profile')}
                     >
                         🏢 Perfil y Documentación
                     </button>
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'services' || activeView === 'add_service' ? 'active' : ''}`}
                         onClick={() => setActiveView('services')}
                     >
                         🗺️ Administrar Servicios
                     </button>
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'employees' || activeView === 'add_employee' ? 'active' : ''}`}
                         onClick={() => setActiveView('employees')}
                     >
                         👥 Gestión de Empleados
                     </button>
                     {/* 🚨 NUEVO BOTÓN DE NAVEGACIÓN 🚨 */}
-                    <button 
+                    <button
                         className={`nav-item ${activeView === 'reviews' ? 'active' : ''}`}
                         onClick={() => setActiveView('reviews')}
                     >
                         ⭐ Comentarios y Reseñas
                     </button>
-                    <hr/>
+                    <hr />
                     <button className="nav-item logout">
                         Salir
                     </button>
@@ -270,7 +415,7 @@ function CompanyDashboard() {
 
             {/* -------------------- MAIN CONTENT -------------------- */}
             <main className="dashboard-main-content">
-                <h1 className="main-title">Dashboard de {companyExampleData.razonSocial}</h1>
+                <h1 className="main-title">Dashboard de {companyData?.razonSocial || 'Mi Empresa'}</h1>
                 {renderContent()}
             </main>
         </div>

@@ -11,7 +11,7 @@
     margin-bottom: 20px;
 }
 
-.profile-details-grid > div {
+.profile-details-grid>div {
     padding: 10px;
     background-color: #f4f4f4;
     border-radius: 4px;
@@ -26,7 +26,8 @@
 }
 
 /* Asegurar que el botón de Perfil de Empresa luzca bien */
-.btn-edit-profile, .btn-manage-docs {
+.btn-edit-profile,
+.btn-manage-docs {
     padding: 10px 20px;
     background-color: #337ab7;
     color: white;
@@ -37,6 +38,21 @@
     transition: background-color 0.3s;
 }
 
-.btn-edit-profile:hover, .btn-manage-docs:hover {
+.btn-edit-profile:hover,
+.btn-manage-docs:hover {
     background-color: #286090;
+}
+
+/* Cards Grid Layout */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
 }

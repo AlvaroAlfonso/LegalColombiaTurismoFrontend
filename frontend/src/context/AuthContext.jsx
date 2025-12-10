@@ -41,7 +41,13 @@ export function AuthProvider({ children }) {
     setError(null);
     try {
       const { data } = await authApi.login(credentials);
-      persistSession(data.token, data.user);
+      // The backend now returns: { message, usuario, role, user_id, tokens: { access, refresh } }
+      const accessToken = data.tokens?.access || data.token;
+
+      // Enhance user object with role if missing or separate
+      const userWithRole = { ...data.usuario, role: data.role || data.usuario?.nombre_tipo };
+
+      persistSession(accessToken, userWithRole);
       return data;
     } catch (err) {
       setError(err.response?.data?.detail || 'Error al iniciar sesión');
@@ -56,10 +62,15 @@ export function AuthProvider({ children }) {
     setError(null);
     try {
       const { data } = await authApi.register(formData);
-      // Algunos backends devuelven token al registrar.
-      if (data.token) {
-        persistSession(data.token, data.user);
+      // Backend podría devolver { tokens: { access, refresh }, usuario, role }
+      const accessToken = data.tokens?.access || data.token;
+      const userPayload = data.usuario || data.user || data;
+      const userWithRole = { ...userPayload, role: data.role || userPayload?.nombre_tipo };
+
+      if (accessToken) {
+        persistSession(accessToken, userWithRole);
       }
+
       return data;
     } catch (err) {
       setError(err.response?.data || 'Error al registrarse');

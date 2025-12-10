@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form'; // <-- Importar Hook Form
 import { zodResolver } from '@hookform/resolvers/zod'; // <-- Resolver para Zod
 import * as z from 'zod'; // <-- Importar Zod
-import './styles/LoginPage.css'; 
+import './styles/LoginPage.css';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,10 +16,10 @@ function LoginPage() {
     const { login, loading, error } = useAuth();
     const navigate = useNavigate();
 
-    const { 
-        register, 
-        handleSubmit, 
-        formState: { errors } 
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
     } = useForm({
         resolver: zodResolver(LoginSchema), // Usar el esquema definido
     });
@@ -27,16 +27,27 @@ function LoginPage() {
     const onSubmit = async (data) => {
         try {
             const response = await login(data);
-            const role = response?.user?.role || response?.user?.rol;
-            if (role === 'turista') {
-                navigate('/dashboard-turista');
-            } else if (role === 'empresa') {
-                navigate('/dashboard-empresa');
-            } else {
-                navigate('/dashboard-proveedor');
+            // El backend devuelve: { message, usuario: { ... }, role: "TIPO", ... }
+            const role = response.role || response.usuario?.nombre_tipo;
+
+            console.log("Login successful, role:", role);
+
+            switch (role) {
+                case 'TURISTA':
+                    navigate('/dashboard-turista');
+                    break;
+                case 'EMPRESA':
+                    navigate('/dashboard-empresa');
+                    break;
+                case 'PRESTADOR':
+                    navigate('/dashboard-proveedor');
+                    break;
+                default:
+                    // Fallback si no hay rol o es admin
+                    navigate('/');
             }
         } catch (err) {
-            // error ya se maneja en el contexto
+            console.error("Login failed", err);
         }
     };
 
@@ -44,48 +55,48 @@ function LoginPage() {
         <div className="login-page-container">
             <div className="login-form-wrapper">
                 <h2 className="login-title">Tu Puerta de Entrada a la Legalidad Turística</h2>
-                
+
                 {/* 3. Adjuntar handleSubmit y onSubmit al formulario */}
                 <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
-                    
+
                     {/* Campo Correo Electrónico */}
                     <div className="form-group">
                         <label htmlFor="email">Correo Electrónico</label>
                         {/* 4. Adjuntar la función register y el nombre del campo */}
-                        <input 
-                            type="email" 
-                            id="email" 
-                            placeholder=" " 
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder=" "
                             {...register("email")}
                         />
                         {/* Mostrar error si existe */}
                         {errors.email && <p className="error-message">{errors.email.message}</p>}
                     </div>
-                    
+
                     {/* Campo Contraseña */}
                     <div className="form-group">
                         <label htmlFor="password">Contraseña</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            placeholder=" " 
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder=" "
                             {...register("password")}
                         />
                         {errors.password && <p className="error-message">{errors.password.message}</p>}
                     </div>
-                    
+
                     {/* Checkbox Recordar Información */}
                     <div className="form-checkbox">
                         <input type="checkbox" id="remember" {...register("remember")} />
                         <label htmlFor="remember">Recordar información</label>
                     </div>
-                    
+
                     {/* Botón de Registro */}
                     <button type="submit" className="btn-login-submit">
                         {loading ? 'Ingresando...' : 'Iniciar Sesión'}
                     </button>
                     {error && <p className="error-message">{String(error)}</p>}
-                    
+
                     {/* Enlaces de Recuperación / Registro */}
                     <div className="login-links">
                         <p className="forgot-password">¿Olvidó su Contraseña?</p>

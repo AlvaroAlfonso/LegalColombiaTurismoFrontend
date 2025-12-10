@@ -8,22 +8,27 @@ const api = axios.create({
 });
 
 // Inserta el token en cada request si existe.
+// Inserta el token en cada request si existe.
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth_token');
+  let token = localStorage.getItem('auth_token');
   if (token) {
+    // Limpieza defensiva por si se guardó con comillas extra
+    token = token.replace(/^"|"$/g, '');
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// Permite manejar 401 centralmente si se desea.
+// Permite manejar 401 centralmente.
 api.interceptors.response.use(
   (resp) => resp,
   (error) => {
     if (error.response?.status === 401) {
-      // Podemos limpiar sesión si el backend devuelve 401 persistente.
-      // Se deja como comentario para evitar side-effects inesperados.
-      // localStorage.removeItem('auth_token');
+      // Si el token es inválido o expiró, limpiamos y redirigimos
+      console.warn("Sesión expirada o inválida. Cerrando sesión...");
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      window.location.href = '/iniciar-sesion';
     }
     return Promise.reject(error);
   },
