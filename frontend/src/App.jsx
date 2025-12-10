@@ -8,8 +8,14 @@ import Footer from './components/Footer';
 import ProvisorPage from './pages/ProvisorPage';
 import LoginPage from './pages/loginPage'; 
 import RegisterPage from './pages/RegisterPage';
+
 import ProviderDashboard from './pages/ProviderDashboard';
 import CompanyDashboard from './pages/CompanyDashboard';
+
+import Turist from './pages/HomeTurist';
+import Informacion from './pages/InformacionTurist';
+import ServiciosSeguros from "./pages/ServiciosSeguros";
+
 
 import './App.css'
 
@@ -39,11 +45,13 @@ function App() {
          
           />
           
+          <Route path="/Turista" element={<Turist />} />
+          <Route path="/informacion" element={<Informacion />} />
+          <Route path="/servicios-seguros" element={<ServiciosSeguros />} />
         </Routes>
       </div>
       <Footer />
     </Router>
-    
   );
 }
 

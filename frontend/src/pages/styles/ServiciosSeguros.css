@@ -1,0 +1,55 @@
+.servicios-container {
+  padding: 80px 40px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.titulo-principal {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 60px;
+  font-weight: 800;
+}
+
+.titulo-principal span {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.modulo {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 70px;
+}
+
+.modulo.reverse {
+  flex-direction: row-reverse;
+}
+
+.modulo-texto h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.modulo-texto p {
+  color: #444;
+  line-height: 1.6;
+}
+
+.modulo-imagen {
+  width: 420px;
+  border-radius: 12px;
+}
+
+@media (max-width: 900px) {
+  .modulo,
+  .modulo.reverse {
+    flex-direction: column !important;
+  }
+
+  .modulo-imagen {
+    width: 100%;
+  }
+}
